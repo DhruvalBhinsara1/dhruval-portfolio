@@ -6,6 +6,8 @@ import { fileURLToPath } from 'url'
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
 // https://vite.dev/config/
+
+/// <reference types="node" />
 export default defineConfig({
   plugins: [react()],
   resolve: {
