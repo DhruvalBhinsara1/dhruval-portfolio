@@ -89,7 +89,7 @@ const ContactForm: React.FC = () => {
             <div className="flex flex-wrap justify-center gap-4">
               {/* Direct Email */}
               <motion.a
-                href="mailto:dhruvalbhinsara@example.com"
+                href="mailto:dhruvalbhinsara460@gmail.com"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 className="flex items-center gap-2 px-4 py-2 bg-blue-50 hover:bg-blue-100 border border-blue-200 rounded-lg transition-colors duration-200 text-blue-700 font-medium"
