@@ -37,7 +37,7 @@ const HeroSection: React.FC = () => {
   }, [displayed, typing, subtitleIdx]);
 
   return (
-  <section id="home" className="relative min-h-screen flex flex-col justify-center items-center px-4 pt-16 md:pt-28 pb-12 overflow-hidden">
+  <section id="home" className="relative min-h-[100svh] min-h-screen md:min-h-dvh flex flex-col justify-center items-center px-4 pt-16 md:pt-28 pb-12 overflow-hidden snap-start">
       {/* Subtle grid background inspired by Aceternity UI */}
       <div
         className={
@@ -97,7 +97,14 @@ const HeroSection: React.FC = () => {
         </motion.button>
       </motion.div>
       {/* Scroll indicator */}
-      <div className="absolute left-1/2 bottom-6 -translate-x-1/2 flex flex-col items-center z-20 select-none pointer-events-none">
+      <button
+        type="button"
+        aria-label="Scroll to About section"
+        onClick={() => document.getElementById('about')?.scrollIntoView({ behavior: 'smooth' })}
+        className="absolute left-1/2 bottom-6 -translate-x-1/2 flex flex-col items-center z-20 select-none outline-none focus:outline-none active:outline-none bg-transparent border-none"
+        tabIndex={0}
+        style={{ background: 'none', boxShadow: 'none' }}
+      >
         <motion.div
           animate={{ y: [0, 12, 0] }}
           transition={{ duration: 1.4, repeat: Infinity, ease: 'easeInOut' }}
@@ -106,9 +113,9 @@ const HeroSection: React.FC = () => {
             <polyline points="6 9 12 15 18 9" />
           </svg>
         </motion.div>
-      </div>
-    </section>
+    </button>
+  </section>
   );
-};
+}
 
 export default HeroSection;
