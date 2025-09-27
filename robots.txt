@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://dhruvalbhinsara.com/sitemap.xml
+
+# SEO: Disallow admin or sensitive paths if any
+# Disallow: /admin/
+# Disallow: /private/
