@@ -8,10 +8,29 @@ const ContactForm: React.FC = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const [status, setStatus] = useState<'idle' | 'sending' | 'success' | 'error'>("idle");
+  const [errorMsg, setErrorMsg] = useState("");
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle form submission
-    alert('Form submitted!');
+    setStatus("sending");
+    setErrorMsg("");
+    try {
+      const apiUrl = (import.meta.env.MODE === 'production')
+        ? '/api/send-email'
+        : 'http://localhost:5000/api/send-email';
+      const res = await fetch(apiUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+      if (!res.ok) throw new Error("Failed to send message");
+      setStatus("success");
+      setFormData({ name: '', email: '', message: '' });
+    } catch (err: any) {
+      setStatus("error");
+      setErrorMsg(err.message || "Something went wrong.");
+    }
   };
 
   return (
@@ -77,9 +96,16 @@ const ContactForm: React.FC = () => {
           <button
             type="submit"
             className="w-full px-6 py-3 bg-slate-900/90 hover:bg-slate-900 text-white rounded-full font-semibold transition-all duration-300 shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-slate-400"
+            disabled={status === 'sending'}
           >
-            Send Message
+            {status === 'sending' ? 'Sending...' : 'Send Message'}
           </button>
+          {status === 'success' && (
+            <div className="text-green-600 text-center font-semibold mt-2">Message sent successfully!</div>
+          )}
+          {status === 'error' && (
+            <div className="text-red-600 text-center font-semibold mt-2">{errorMsg || 'Failed to send message.'}</div>
+          )}
         </motion.form>
         
         {/* Alternative Contact Methods */}
@@ -136,7 +162,8 @@ const ContactForm: React.FC = () => {
           {/* Download Resume */}
           <div>
             <motion.a
-              href="#"
+              href="/assets/Dhruval_Bhinsara_Resume.pdf"
+              download
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               className="inline-flex items-center gap-2 px-6 py-3 bg-slate-900 hover:bg-slate-800 text-white rounded-full font-semibold transition-all duration-300 shadow-md hover:shadow-lg"

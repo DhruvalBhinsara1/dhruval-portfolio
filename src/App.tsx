@@ -1,8 +1,8 @@
 import Navbar from './components/Navbar';
 import HeroSection from './components/HeroSection';
 import ProjectsGrid from './components/ProjectsGrid';
-import SkillsBadges from './components/SkillsBadges';
 import AboutCard from './components/AboutCard';
+import ResumeSection from './components/ResumeSection';
 import ContactForm from './components/ContactForm';
 import Footer from './components/Footer';
 import BackToTopButton from './components/BackToTopButton';
@@ -13,8 +13,8 @@ function App() {
       <Navbar />
       <HeroSection />
       <AboutCard />
-      <ProjectsGrid />
-      <SkillsBadges />
+  <ProjectsGrid />
+  <ResumeSection />
       <ContactForm />
       <Footer />
       <BackToTopButton />
