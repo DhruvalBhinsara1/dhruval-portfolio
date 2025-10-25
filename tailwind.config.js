@@ -6,23 +6,8 @@ export default {
   ],
   theme: {
     extend: {
-      colors: {
-        primary: 'var(--color-primary)',
-        secondary: 'var(--color-secondary)',
-        accent: 'var(--color-accent)',
-        'accent-hover': 'var(--color-accent-hover)',
-        background: 'var(--color-background)',
-        surface: 'var(--color-surface)',
-        border: 'var(--color-border)',
-        text: 'var(--color-text)',
-        'text-secondary': 'var(--color-text-secondary)',
-      },
       fontFamily: {
         sans: ['Inter', 'system-ui', 'sans-serif'],
-      },
-      spacing: {
-        '18': '4.5rem',
-        '88': '22rem',
       },
       animation: {
         'fade-in': 'fadeIn 0.5s ease-in-out',

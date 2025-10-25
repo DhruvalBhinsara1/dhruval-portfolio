@@ -1,10 +1,8 @@
-import { useState } from 'react';
-import { Document, Page, pdfjs } from 'react-pdf';
-import 'react-pdf/dist/Page/AnnotationLayer.css';
-import 'react-pdf/dist/Page/TextLayer.css';
-import styles from './ResumeSection.module.css';
+import { useState } from "react";
+import { Document, Page, pdfjs } from "react-pdf";
+import "react-pdf/dist/Page/AnnotationLayer.css";
+import "react-pdf/dist/Page/TextLayer.css";
 
-// Set up the PDF.js worker
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
 
 const ResumeSection: React.FC = () => {
@@ -16,78 +14,69 @@ const ResumeSection: React.FC = () => {
   }
 
   return (
-    <section id="resume" className="w-full flex flex-col items-center py-20 bg-white text-black">
-      <h2 className="text-4xl font-bold mb-8 text-center">My Resume</h2>
-      
-      <div className="w-full max-w-3xl rounded-lg shadow-lg overflow-hidden border-2 border-slate-900 bg-white">
-        <div
-          className={styles['hide-scrollbar']}
-          style={{
-            width: '100%',
-            height: '80vh',
-            minHeight: '500px',
-            overflowY: 'auto',
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            padding: '20px',
-          }}
-        >
-          <Document
-            file="/assets/Dhruval_Bhinsara_Resume.pdf"
-            onLoadSuccess={onDocumentLoadSuccess}
-            loading={
-              <div className="flex items-center justify-center h-64">
-                <div className="text-slate-900 font-semibold">Loading PDF...</div>
-              </div>
-            }
-            error={
-              <div className="flex items-center justify-center h-64">
-                <div className="text-red-600 font-semibold">Failed to load PDF</div>
-              </div>
-            }
+    <section id="resume" className="py-24 md:py-32 px-6 md:px-12 bg-white">
+      <div className="max-w-7xl mx-auto">
+        <h2 className="text-2xl md:text-4xl font-medium mb-12 md:mb-16">RESUME</h2>
+
+        <div className="max-w-4xl border border-black/10 overflow-hidden">
+          <div
+            style={{
+              width: "100%",
+              height: "70vh",
+              minHeight: "500px",
+              overflowY: "auto",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              padding: "20px",
+            }}
           >
-            <Page
-              pageNumber={pageNumber}
-              renderTextLayer={true}
-              renderAnnotationLayer={true}
-              className="shadow-md"
-              width={Math.min(window.innerWidth * 0.8, 700)}
-            />
-          </Document>
-        </div>
-        
-        {/* Page Navigation */}
-        {numPages && numPages > 1 && (
-          <div className="flex items-center justify-center gap-4 py-4 bg-slate-50 border-t-2 border-slate-900">
-            <button
-              onClick={() => setPageNumber(Math.max(1, pageNumber - 1))}
-              disabled={pageNumber <= 1}
-              className="px-4 py-2 bg-slate-900 text-white font-semibold rounded disabled:bg-slate-400 disabled:cursor-not-allowed hover:bg-slate-800 transition-colors"
+            <Document
+              file="/assets/Dhruval_Bhinsara_Resume.pdf"
+              onLoadSuccess={onDocumentLoadSuccess}
+              loading={<div className="py-32 text-center">Loading PDF...</div>}
+              error={<div className="py-32 text-center text-red-600">Failed to load PDF</div>}
             >
-              Previous
-            </button>
-            <span className="text-sm font-semibold text-slate-900">
-              Page {pageNumber} of {numPages}
-            </span>
-            <button
-              onClick={() => setPageNumber(Math.min(numPages, pageNumber + 1))}
-              disabled={pageNumber >= numPages}
-              className="px-4 py-2 bg-slate-900 text-white font-semibold rounded disabled:bg-slate-400 disabled:cursor-not-allowed hover:bg-slate-800 transition-colors"
-            >
-              Next
-            </button>
+              <Page
+                pageNumber={pageNumber}
+                renderTextLayer={true}
+                renderAnnotationLayer={true}
+                width={Math.min(window.innerWidth * 0.8, 700)}
+              />
+            </Document>
           </div>
-        )}
+
+          {numPages && numPages > 1 && (
+            <div className="flex items-center justify-center gap-6 py-4 border-t border-black/10">
+              <button
+                onClick={() => setPageNumber(Math.max(1, pageNumber - 1))}
+                disabled={pageNumber <= 1}
+                className="px-4 py-2 text-sm font-medium hover:opacity-60 transition-opacity disabled:opacity-30"
+              >
+                Previous
+              </button>
+              <span className="text-sm">
+                Page {pageNumber} of {numPages}
+              </span>
+              <button
+                onClick={() => setPageNumber(Math.min(numPages, pageNumber + 1))}
+                disabled={pageNumber >= numPages}
+                className="px-4 py-2 text-sm font-medium hover:opacity-60 transition-opacity disabled:opacity-30"
+              >
+                Next
+              </button>
+            </div>
+          )}
+        </div>
+
+        <a
+          href="/assets/Dhruval_Bhinsara_Resume.pdf"
+          download
+          className="inline-block mt-6 px-6 py-2.5 text-sm bg-black text-white font-medium hover:opacity-80 transition-opacity"
+        >
+          Download PDF
+        </a>
       </div>
-      
-      <a
-        href="/assets/Dhruval_Bhinsara_Resume.pdf"
-        download
-        className="mt-6 inline-block px-6 py-3 bg-slate-900 hover:bg-slate-800 text-white rounded-full font-semibold transition-all duration-300 shadow-md hover:shadow-lg"
-      >
-        Download PDF
-      </a>
     </section>
   );
 };

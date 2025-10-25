@@ -19,7 +19,7 @@ const BackToTopButton: React.FC = () => {
     <button
       onClick={handleClick}
       aria-label="Back to Top"
-  className={`fixed bottom-6 right-6 z-50 p-3 rounded-full bg-blue-600 text-white shadow-lg hover:bg-blue-700 transition-all duration-300 ${visible ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
+  className={`fixed bottom-6 right-6 z-50 p-3 bg-blue-600 text-white shadow-lg hover:bg-blue-700 transition-all duration-300 ${visible ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
       style={{ boxShadow: '0 4px 16px 0 rgba(0,0,0,0.10)' }}
     >
       <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
