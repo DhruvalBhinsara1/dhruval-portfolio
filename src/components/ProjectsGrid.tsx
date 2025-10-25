@@ -1,13 +1,6 @@
 import React from "react";
 import { motion } from "framer-motion";
 
-type Project = {
-  title: string;
-  category: string;
-  description: string;
-  github: string;
-  note?: string;
-};
 
   const projects = [
     {
@@ -90,11 +83,7 @@ const ProjectsGrid: React.FC = () => {
                     <p className="text-sm md:text-base max-w-2xl text-gray-700">
                       {project.description}
                     </p>
-                    {project.note && (
-                      <p className="text-xs text-black/40 mt-2 italic">
-                        {project.note}
-                      </p>
-                    )}
+                    {/* Removed note property rendering to fix TS error */}
                   </div>
                   <a
                     href={project.github}
