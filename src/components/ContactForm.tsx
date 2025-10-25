@@ -16,15 +16,15 @@ const ContactForm: React.FC = () => {
     setStatus("sending");
     setErrorMsg("");
     try {
-      const apiUrl = (import.meta.env.MODE === 'production')
-        ? '/api/send-email'
-        : 'http://localhost:5000/api/send-email';
-      const res = await fetch(apiUrl, {
+      const res = await fetch('/api/send-email', {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
       });
-      if (!res.ok) throw new Error("Failed to send message");
+      if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.error || "Failed to send message");
+      }
       setStatus("success");
       setFormData({ name: '', email: '', message: '' });
     } catch (err: any) {

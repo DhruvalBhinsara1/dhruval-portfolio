@@ -46,7 +46,7 @@ const HeroSection: React.FC = () => {
             "[background-size:40px_40px]",
             "[background-image:linear-gradient(to_right,theme(colors.slate.300/.5)_1px,transparent_1px),linear-gradient(to_bottom,theme(colors.slate.300/.5)_1px,transparent_1px)]",
             "dark:[background-image:linear-gradient(to_right,theme(colors.slate.700/.5)_1px,transparent_1px),linear-gradient(to_bottom,theme(colors.slate.700/.5)_1px,transparent_1px)]",
-            "opacity-70"
+            "opacity-30"
           )
         }
         aria-hidden="true"
