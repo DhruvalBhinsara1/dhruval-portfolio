@@ -163,7 +163,7 @@ export default function Navbar() {
                 style={{ width: '44px', height: '44px' }}
               >
                 <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="block">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 8a6 6 0 016 6v5a1 1 0 01-1 1h-4a1 1 0 01-1-1v-4a2 2 0 00-4 0v4a1 1 0 01-1 1H7a1 1 0 01-1-1v-5a6 6 0 616-6z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 8a6 6 0 0 1 6 6v5a1 1 0 0 1-1 1h-4a1 1 0 0 1-1-1v-4a2 2 0 0 0-4 0v4a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1v-5a6 6 0 0 1 6-6z" />
                   <rect width="4" height="4" x="2" y="9" rx="1" />
                 </svg>
               </a>
