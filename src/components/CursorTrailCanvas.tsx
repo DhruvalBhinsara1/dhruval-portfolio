@@ -1,24 +1,17 @@
+
 import { useEffect, useRef } from 'react';
 
-interface Particle {
-  x: number;
-  y: number;
-  size: number;
-  color: string;
-  alpha: number;
-  life: number;
-}
-
+// Fluid cursor effect using spring interpolation
 export default function CursorTrailCanvas() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const particlesRef = useRef<Particle[]>([]);
-  const mouseRef = useRef({ x: 0, y: 0 });
-  const hueRef = useRef(0);
+  // Cursor position
+  const mouseRef = useRef({ x: window.innerWidth / 2, y: window.innerHeight / 2 });
+  // Blob position and velocity
+  const blobRef = useRef({ x: window.innerWidth / 2, y: window.innerHeight / 2, vx: 0, vy: 0 });
 
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
-
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
@@ -33,69 +26,52 @@ export default function CursorTrailCanvas() {
     // Mouse move handler
     const handleMouseMove = (e: MouseEvent) => {
       mouseRef.current = { x: e.clientX, y: e.clientY };
-      
-      // Add new particle
-      const hue = hueRef.current;
-      particlesRef.current.push({
-        x: e.clientX,
-        y: e.clientY,
-        size: 80,
-        color: `hsla(${hue}, 70%, 65%, 0.08)`,
-        alpha: 1,
-        life: 1
-      });
-
-      // Update hue
-      hueRef.current = (hueRef.current + 2) % 360;
-
-      // Limit particles
-      if (particlesRef.current.length > 25) {
-        particlesRef.current.shift();
-      }
     };
-
     window.addEventListener('mousemove', handleMouseMove);
+
+    // Spring physics parameters
+    const stiffness = 0.18; // how fast blob follows
+    const damping = 0.75;   // how much velocity slows
+    const blobRadius = 32;  // size of the blob
 
     // Animation loop
     let animationId: number;
     const animate = () => {
+      // Physics: move blob towards mouse
+      const mouse = mouseRef.current;
+      const blob = blobRef.current;
+      const dx = mouse.x - blob.x;
+      const dy = mouse.y - blob.y;
+      blob.vx += dx * stiffness;
+      blob.vy += dy * stiffness;
+      blob.vx *= damping;
+      blob.vy *= damping;
+      blob.x += blob.vx;
+      blob.y += blob.vy;
+
       // Clear canvas
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      // Update and draw particles
-      particlesRef.current = particlesRef.current.filter(particle => {
-        particle.life -= 0.015;
-        particle.alpha = particle.life;
-        particle.size = 80 * particle.life;
+      // Draw fluid blob (circle with shadow)
+      ctx.save();
+      ctx.beginPath();
+      ctx.arc(blob.x, blob.y, blobRadius, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(120, 180, 255, 0.18)';
+      ctx.shadowColor = 'rgba(120, 180, 255, 0.32)';
+      ctx.shadowBlur = 32;
+      ctx.fill();
+      ctx.restore();
 
-        if (particle.life > 0) {
-          // Draw outer glow
-          const gradient = ctx.createRadialGradient(
-            particle.x, particle.y, 0,
-            particle.x, particle.y, particle.size
-          );
-          
-          const hue = (hueRef.current - (1 - particle.life) * 20 + 360) % 360;
-          gradient.addColorStop(0, `hsla(${hue}, 80%, 70%, ${particle.alpha * 0.12})`);
-          gradient.addColorStop(0.5, `hsla(${hue}, 70%, 65%, ${particle.alpha * 0.08})`);
-          gradient.addColorStop(1, `hsla(${hue}, 70%, 65%, 0)`);
-
-          ctx.fillStyle = gradient;
-          ctx.fillRect(
-            particle.x - particle.size,
-            particle.y - particle.size,
-            particle.size * 2,
-            particle.size * 2
-          );
-
-          return true;
-        }
-        return false;
-      });
+      // Draw inner circle for highlight
+      ctx.save();
+      ctx.beginPath();
+      ctx.arc(blob.x, blob.y, blobRadius * 0.6, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(120, 180, 255, 0.32)';
+      ctx.fill();
+      ctx.restore();
 
       animationId = requestAnimationFrame(animate);
     };
-
     animate();
 
     return () => {

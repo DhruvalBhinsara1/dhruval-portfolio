@@ -51,9 +51,10 @@ export default function Navbar() {
   };
 
   return (
-    <nav className={`z-50 transition-all duration-500 ease-in-out ${styles.navbar}`}>
-      {/* Desktop navbar container and nav links/icons */}
-      <div className="hidden md:flex fixed top-4 left-1/2 -translate-x-1/2 backdrop-blur-2xl bg-white/10 rounded-full px-6 items-center gap-4 h-14 shadow-2xl border border-white/20 ${styles.navbarInner}">
+  <nav className={`transition-all duration-500 ease-in-out ${styles.navbar}`}>
+    {/* Desktop navbar container and nav links/icons */}
+    <div className="hidden md:flex fixed top-6 left-1/2 -translate-x-1/2 z-50">
+      <div className={`backdrop-blur-2xl bg-white/10 rounded-full px-6 items-center gap-4 h-14 shadow-2xl border border-white/20 flex ${styles.navbarInner}`} style={{ maxWidth: '700px', minWidth: '340px' }}>
         {/* Logo */}
         <button
           onClick={() => handleScroll("home")}
@@ -99,6 +100,7 @@ export default function Navbar() {
           </a>
         </div>
       </div>
+    </div>
       {/* Mobile hamburger menu button, only visible on small screens */}
     <button
   className="md:hidden absolute top-4 left-4 w-12 h-12 rounded-xl shadow-xl flex items-center justify-center border border-gray-400/40 bg-white/30 backdrop-blur-xl z-50 ring-2 ring-gray-300/40"

@@ -8,7 +8,7 @@ import ResumeSection from './components/ResumeSection';
 import ContactForm from './components/ContactForm';
 import Footer from './components/Footer';
 import BackToTopButton from './components/BackToTopButton';
-import CursorTrailCanvas from './components/CursorTrailCanvas';
+import FluidCursor from './components/FluidCursor';
 
 function App() {
   // Scroll to top on page load
@@ -18,9 +18,9 @@ function App() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-white via-gray-50/30 to-white text-black snap-y snap-mandatory relative">
-      <CursorTrailCanvas />
-      <div className="relative z-10">
-        <Navbar />
+      <FluidCursor />
+      <Navbar />
+      <div className="relative z-10 pt-20">
         <HeroSection />
         <div className="h-px bg-gradient-to-r from-transparent via-gray-200/50 to-transparent" />
         <AboutCard />
