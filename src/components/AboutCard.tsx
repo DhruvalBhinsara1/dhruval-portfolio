@@ -3,47 +3,95 @@ import { motion } from "framer-motion";
 
 const AboutCard: React.FC = () => {
   return (
-    <section id="about" className="py-24 md:py-32 px-6 md:px-12 bg-white">
-      <div className="max-w-7xl mx-auto">
+    <section id="about" className="py-16 md:py-24 px-6 md:px-12 bg-transparent">
+      <div className="max-w-6xl mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
           viewport={{ once: true }}
+          className="backdrop-blur-md bg-white/60 rounded-3xl shadow-2xl p-8 md:p-12 lg:p-16 border border-white/20"
         >
-          <h2 className="text-sm md:text-base font-bold mb-12 md:mb-16 tracking-[0.3em]">
-            ABOUT ME
-          </h2>
+          <div className="flex flex-col md:flex-row gap-8 md:gap-12 items-start">
+            {/* Avatar Section */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              viewport={{ once: true }}
+              className="flex-shrink-0"
+            >
+              <div className="w-48 h-48 md:w-64 md:h-64 bg-gray-100 rounded-full flex items-center justify-center overflow-hidden">
+                <img 
+                  src="/dhruval-profile.jpg" 
+                  alt="Dhruval Bhinsara"
+                  className="w-full h-full object-cover"
+                />
+              </div>
+            </motion.div>
 
-          <div className="space-y-6 md:space-y-8 max-w-4xl">
-            <p className="text-sm md:text-base lg:text-lg leading-relaxed text-gray-700">
-              I'm a student at Parul University with a passion for turning raw data into meaningful insights. 
-              What started as curiosity about patterns and numbers has evolved into a journey through Excel, 
-              SQL, Python, and modern BI tools. I enjoy data analysis and building projects that showcase the 
-              power of data-driven decision making.
-            </p>
+            {/* Content Section */}
+            <div className="flex-1">
+              <motion.h2
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.3 }}
+                viewport={{ once: true }}
+                className="text-3xl md:text-4xl font-bold mb-2 text-black"
+              >
+                Dhruval Bhinsara
+              </motion.h2>
+              
+              <motion.p
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.4 }}
+                viewport={{ once: true }}
+                className="text-gray-600 mb-6"
+              >
+                Surat, Gujarat, India
+              </motion.p>
 
-            <p className="text-sm md:text-base lg:text-lg leading-relaxed text-gray-700">
-              Through hands-on projects and continuous learning, I work with diverse datasets to uncover trends, 
-              create visualizations, and solve analytical challenges. From e-commerce funnel analysis to influencer 
-              platform insights, my portfolio demonstrates practical experience across Python (Pandas), SQL, Excel, 
-              Tableau, and Power BI.
-            </p>
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.5 }}
+                viewport={{ once: true }}
+                className="mb-6"
+              >
+                <p className="text-lg leading-relaxed text-black mb-4">
+                  I'm an <strong>Aspiring Data Analyst</strong> and a <strong>Computer Science major</strong> with a specialization in <strong>Oracle Technologies</strong>. My interest in Data Science began during my teenage years, and has grown stronger over time.
+                </p>
+                
+                {/* Skills Tags */}
+                <div className="flex flex-wrap gap-2 mb-6">
+                  {['Tableau', 'SQL', 'Microsoft Power BI', 'Python', 'Excel', 'Data Analysis'].map((skill) => (
+                    <span
+                      key={skill}
+                      className="px-4 py-2 bg-black text-white rounded-full text-sm font-medium"
+                    >
+                      {skill}
+                    </span>
+                  ))}
+                </div>
+              </motion.div>
 
-            <p className="text-sm md:text-base lg:text-lg leading-relaxed text-gray-700">
-              I'm passionate about collaborating on data projects and eager to apply my analytical skills in 
-              real-world scenarios. Whether it's exploring new datasets, building dashboards, or optimizing 
-              processes, I'm committed to delivering clear and actionable insights that create value.
-            </p>
-          </div>
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.6 }}
+                viewport={{ once: true }}
+                className="space-y-4 text-base leading-relaxed text-gray-700"
+              >
+                <p>
+                  I'm <span className="text-black font-medium">Dhruval Bhinsara</span>, an aspiring <span className="text-blue-600 font-medium">Data Analyst</span> based in <span className="text-black font-medium">Surat, Gujarat, India</span>! I'm all about turning complex data into meaningful insights that help in making informed decisions. With skills in <span className="font-medium">Python</span>, <span className="font-medium">SQL</span>, <span className="font-medium">Power BI</span> and more, I'm on a journey to dive deeper into the world of data science and <span className="font-medium">machine learning</span>.
+                </p>
 
-          <div className="mt-12 md:mt-16">
-            <h3 className="text-sm md:text-base font-medium mb-4 tracking-[0.2em]">
-              WHAT MY PERFECT COLLAB LOOKS LIKE
-            </h3>
-            <p className="text-xs md:text-sm text-black/60">
-              scroll below to start turning your data into insights
-            </p>
+                <p>
+                  When I'm not crunching numbers, you can find me reading or indulging in <span className="text-purple-600 font-medium">filmmaking</span>. Oh, and I have a soft spot for <span className="font-medium">indie rock music</span> and movies that explore art and the way of life. What about you? What brings you here today? 😊
+                </p>
+              </motion.div>
+            </div>
           </div>
         </motion.div>
       </div>

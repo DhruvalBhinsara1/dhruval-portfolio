@@ -6,6 +6,7 @@ const navLinks = [
   { name: "Home", id: "home" },
   { name: "About", id: "about" },
   { name: "Projects", id: "projects" },
+  { name: "Skills", id: "skills" },
   { name: "Resume", id: "resume" },
   { name: "Contact", id: "contact" },
 ];
@@ -36,30 +37,31 @@ export default function Navbar() {
   };
 
   return (
-  <nav className={`fixed top-0 left-0 w-full z-50 border-b border-black/10 shadow-sm transition-all duration-300 bg-white ${styles.navbar}`}>
-    <div className={`max-w-6xl mx-auto px-6 flex items-center justify-between h-16 bg-white ${styles.navbarInner}`}>
+  <>
+    <nav className={`fixed top-4 left-1/2 -translate-x-1/2 z-50 transition-all duration-500 ease-in-out ${styles.navbar}`}>
+    <div className={`backdrop-blur-2xl bg-white/10 rounded-full px-6 flex items-center gap-4 h-14 shadow-2xl border border-white/20 ${styles.navbarInner}`}>
         {/* Logo */}
         <button
           onClick={() => handleScroll("home")}
-          className="font-bold text-xl tracking-tight text-black hover:text-gray-700 transition-colors duration-200"
+          className="font-bold text-lg tracking-tight text-gray-800 hover:text-gray-600 transition-colors duration-200 flex-shrink-0"
         >
-          Dhruval Bhhinsara
+          DB
         </button>
         {/* Hamburger Icon (mobile) */}
         <button
-          className="md:hidden ml-2 p-2 focus:outline-none focus:ring-2 focus:ring-black flex items-center justify-center bg-transparent border-none text-black hover:bg-gray-100 transition-colors duration-200"
+          className="md:hidden ml-2 p-2 focus:outline-none focus:ring-2 focus:ring-gray-300 flex items-center justify-center bg-transparent border-none text-gray-800 hover:bg-gray-100/50 transition-colors duration-200"
           aria-label={menuOpen ? "Close menu" : "Open menu"}
           onClick={() => setMenuOpen((v) => !v)}
         >
           {menuOpen ? (
             // Close (X) icon
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="text-black">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="text-gray-800">
               <line x1="6" y1="6" x2="18" y2="18" />
               <line x1="6" y1="18" x2="18" y2="6" />
             </svg>
           ) : (
             // Hamburger icon
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="text-black">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="text-gray-800">
               <line x1="4" y1="7" x2="20" y2="7" />
               <line x1="4" y1="12" x2="20" y2="12" />
               <line x1="4" y1="17" x2="20" y2="17" />
@@ -67,15 +69,15 @@ export default function Navbar() {
           )}
         </button>
         {/* Nav Links (desktop) */}
-        <ul className="hidden md:flex gap-8">
+        <ul className="hidden md:flex gap-6">
           {navLinks.map((link) => (
             <li key={link.name}>
               <button
                 type="button"
                 onClick={() => handleScroll(link.id)}
-                className="relative text-black font-medium transition-colors duration-200 hover:text-gray-700 group"
+                className="relative text-gray-800 text-sm font-medium transition-colors duration-200 hover:text-gray-600 group whitespace-nowrap"
               >
-                <span className="inline-block pb-1 border-b-2 border-transparent group-hover:border-black group-hover:scale-x-100 transition-all duration-300">
+                <span className="inline-block pb-1 border-b-2 border-transparent group-hover:border-gray-800 group-hover:scale-x-100 transition-all duration-300">
                   {link.name}
                 </span>
               </button>
@@ -83,16 +85,16 @@ export default function Navbar() {
           ))}
         </ul>
         {/* Icons (desktop) */}
-        <div className="hidden md:flex gap-3 items-center">
+        <div className="hidden md:flex gap-2 items-center">
           {/* GitHub icon */}
           <a
             href="https://github.com/DhruvalBhinsara1"
             target="_blank"
             rel="noopener noreferrer"
             aria-label="GitHub"
-            className={`p-2 w-10 h-10 text-black hover:text-gray-700 hover:bg-gray-100 transition-all duration-200 flex items-center justify-center ${styles.socialButton}`}
+            className={`p-2 w-9 h-9 text-gray-700 hover:text-gray-900 hover:bg-gray-100/50 transition-all duration-200 flex items-center justify-center rounded-full ${styles.socialButton}`}
           >
-            <Github className="w-5 h-5" strokeWidth={2} color="#000" />
+            <Github className="w-4 h-4" strokeWidth={2} color="#374151" />
           </a>
           {/* LinkedIn icon */}
           <a
@@ -100,11 +102,12 @@ export default function Navbar() {
             target="_blank"
             rel="noopener noreferrer"
             aria-label="LinkedIn"
-            className={`p-2 w-10 h-10 text-black hover:text-gray-700 hover:bg-gray-100 transition-all duration-200 flex items-center justify-center ${styles.socialButton}`}
+            className={`p-2 w-9 h-9 text-gray-700 hover:text-gray-900 hover:bg-gray-100/50 transition-all duration-200 flex items-center justify-center rounded-full ${styles.socialButton}`}
           >
-            <Linkedin className="w-5 h-5" strokeWidth={2} color="#000" />
+            <Linkedin className="w-4 h-4" strokeWidth={2} color="#374151" />
           </a>
         </div>
+        
         {/* Mobile Menu Overlay and Drawer */}
         {/* Overlay */}
         {menuOpen && (
@@ -163,5 +166,6 @@ export default function Navbar() {
         </div>
     </div>
   </nav>
+  </>
   );
 }

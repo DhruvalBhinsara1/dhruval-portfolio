@@ -14,11 +14,11 @@ const ResumeSection: React.FC = () => {
   }
 
   return (
-    <section id="resume" className="py-24 md:py-32 px-6 md:px-12 bg-white">
+    <section id="resume" className="py-16 md:py-24 px-6 md:px-12 bg-transparent">
       <div className="max-w-7xl mx-auto">
         <h2 className="text-2xl md:text-4xl font-medium mb-12 md:mb-16">RESUME</h2>
 
-        <div className="max-w-4xl border border-black/10 overflow-hidden">
+        <div className="max-w-4xl backdrop-blur-md bg-white/60 border border-white/20 overflow-hidden rounded-xl shadow-lg">
           <div
             style={{
               width: "100%",

@@ -38,21 +38,21 @@ const ContactForm: React.FC = () => {
   };
 
   return (
-    <section id="contact" className="py-24 md:py-32 px-6 md:px-12">
-      <div className="max-w-7xl mx-auto">
+    <section id="contact" className="py-16 md:py-24 px-6 md:px-12 bg-transparent">
+      <div className="max-w-4xl mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
           viewport={{ once: true }}
         >
-          <h2 className="text-2xl md:text-4xl font-medium mb-12 md:mb-16">
+          <h2 className="text-4xl md:text-5xl font-bold mb-16 tracking-tight">
             LET'S CONNECT
           </h2>
 
-          <form onSubmit={handleSubmit} className="max-w-2xl space-y-6">
+          <form onSubmit={handleSubmit} className="space-y-8">
             <div>
-              <label htmlFor="name" className="block text-xs md:text-sm font-medium mb-2">
+              <label htmlFor="name" className="block text-base font-normal mb-3 text-black">
                 Name
               </label>
               <input
@@ -61,13 +61,14 @@ const ContactForm: React.FC = () => {
                 name="name"
                 value={formData.name}
                 onChange={handleChange}
-                className="w-full px-4 py-2.5 text-sm border border-black/20 focus:border-black focus:outline-none transition-colors"
+                className="w-full px-0 py-3 text-base border-0 border-b border-gray-300 focus:border-black focus:outline-none transition-colors bg-transparent placeholder-gray-400"
+                placeholder=""
                 required
               />
             </div>
 
             <div>
-              <label htmlFor="email" className="block text-xs md:text-sm font-medium mb-2">
+              <label htmlFor="email" className="block text-base font-normal mb-3 text-black">
                 Email
               </label>
               <input
@@ -76,13 +77,14 @@ const ContactForm: React.FC = () => {
                 name="email"
                 value={formData.email}
                 onChange={handleChange}
-                className="w-full px-4 py-2.5 text-sm border border-black/20 focus:border-black focus:outline-none transition-colors"
+                className="w-full px-0 py-3 text-base border-0 border-b border-gray-300 focus:border-black focus:outline-none transition-colors bg-transparent placeholder-gray-400"
+                placeholder=""
                 required
               />
             </div>
 
             <div>
-              <label htmlFor="message" className="block text-xs md:text-sm font-medium mb-2">
+              <label htmlFor="message" className="block text-base font-normal mb-3 text-black">
                 Message
               </label>
               <textarea
@@ -90,8 +92,9 @@ const ContactForm: React.FC = () => {
                 name="message"
                 value={formData.message}
                 onChange={handleChange}
-                rows={5}
-                className="w-full px-4 py-2.5 text-sm border border-black/20 focus:border-black focus:outline-none transition-colors resize-none"
+                rows={6}
+                className="w-full px-0 py-3 text-base border-0 border-b border-gray-300 focus:border-black focus:outline-none transition-colors bg-transparent resize-none placeholder-gray-400"
+                placeholder=""
                 required
               />
             </div>
@@ -99,16 +102,16 @@ const ContactForm: React.FC = () => {
             <button
               type="submit"
               disabled={status === "sending"}
-              className="px-6 py-2.5 text-sm bg-black text-white font-medium hover:opacity-80 transition-opacity disabled:opacity-50"
+              className="px-8 py-3.5 text-base bg-black text-white font-medium hover:bg-gray-800 transition-all disabled:opacity-50 disabled:cursor-not-allowed rounded-none"
             >
               {status === "sending" ? "Sending..." : "Send Message"}
             </button>
 
             {status === "success" && (
-              <p className="text-sm text-black/60">Message sent successfully!</p>
+              <p className="text-base text-green-600 font-medium">Message sent successfully!</p>
             )}
             {status === "error" && (
-              <p className="text-sm text-red-600">{errorMsg}</p>
+              <p className="text-base text-red-600">{errorMsg}</p>
             )}
           </form>
         </motion.div>

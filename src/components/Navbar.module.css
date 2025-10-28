@@ -1,13 +1,13 @@
-/* Navbar Module - Minimal overrides only */
+/* Navbar Module - Glassmorphism overrides */
 .navbar {
-  background-color: #ffffff;
+  background: transparent;
 }
 
 .navbarInner {
-  background-color: #ffffff;
+  background: transparent;
 }
 
 .socialButton:hover {
-  background-color: #f3f4f6;
+  background-color: rgba(255, 255, 255, 0.1);
   transform: translateY(-1px);
 }

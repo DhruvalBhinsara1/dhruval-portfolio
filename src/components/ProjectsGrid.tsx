@@ -1,5 +1,6 @@
 import React from "react";
 import { motion } from "framer-motion";
+import { ShoppingCart, Users, BarChart3, Database, Code, FileSpreadsheet, TrendingUp } from "lucide-react";
 
 
   const projects = [
@@ -48,56 +49,79 @@ import { motion } from "framer-motion";
   ];
 
 const ProjectsGrid: React.FC = () => {
+  const projectIcons = [ShoppingCart, Users, BarChart3, Database, Code, FileSpreadsheet, TrendingUp];
+  
   return (
-    <section id="projects" className="py-24 md:py-32 px-6 md:px-12">
+    <section id="projects" className="py-16 md:py-24 px-6 md:px-12 bg-transparent">
       <div className="max-w-7xl mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
           viewport={{ once: true }}
+          className="text-center mb-12 md:mb-16"
         >
-          <h2 className="text-2xl md:text-4xl font-medium mb-2">MY LATEST WORK</h2>
-          <p className="text-xs md:text-sm text-black/60 mb-12 md:mb-16">
-            from 2024 'til today'
+          <h2 className="text-3xl md:text-5xl font-bold mb-4 text-black">My Projects</h2>
+          <p className="text-lg text-gray-600">
+            I'm really proud of a few projects I've worked on! One of my standout achievements is creating an E-commerce user behavior funnel with over 40 million rows of data.
           </p>
+        </motion.div>
 
-          <div className="space-y-8 md:space-y-12">
-            {projects.map((project, index) => (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+          {projects.map((project, index) => {
+            const Icon = projectIcons[index];
+            return (
               <motion.div
                 key={project.title}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: index * 0.1 }}
                 viewport={{ once: true }}
-                className="border-b border-black/10 pb-8 md:pb-12 group"
+                whileHover={{ y: -8, scale: 1.02 }}
+                className="backdrop-blur-md bg-white/60 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden group border border-white/20"
               >
-                <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4 md:gap-8">
-                  <div className="flex-1">
-                    <h3 className="text-xl md:text-2xl font-medium mb-3 group-hover:opacity-60 transition-opacity">
-                      {project.title}
-                    </h3>
-                    <p className="text-xs md:text-sm text-black/60 mb-3">
-                      {project.category}
-                    </p>
-                    <p className="text-sm md:text-base max-w-2xl text-gray-700">
-                      {project.description}
-                    </p>
-                    {/* Removed note property rendering to fix TS error */}
+                {/* Glassmorphism Header with Icon */}
+                <div className="h-32 bg-gradient-to-br from-blue-50/50 via-purple-50/50 to-pink-50/50 backdrop-blur-sm flex items-center justify-center relative overflow-hidden">
+                  <div className="absolute inset-0 bg-gradient-to-br from-blue-200/20 via-purple-200/20 to-pink-200/20"></div>
+                  <Icon className="w-16 h-16 text-gray-700 relative z-10" strokeWidth={1.5} />
+                </div>
+
+                <div className="p-6">
+                  <h3 className="text-xl font-bold mb-3 text-black group-hover:text-blue-600 transition-colors">
+                    {project.title}
+                  </h3>
+
+                  <div className="flex flex-wrap gap-2 mb-3">
+                    {project.category.split(', ').map((tag) => (
+                      <span
+                        key={tag}
+                        className="px-3 py-1 bg-white/50 backdrop-blur-sm text-gray-700 rounded-full text-xs font-medium border border-gray-200/50"
+                      >
+                        {tag}
+                      </span>
+                    ))}
                   </div>
+
+                  <p className="text-sm text-gray-600 mb-4 line-clamp-3">
+                    {project.description}
+                  </p>
+
                   <a
                     href={project.github}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-xs md:text-sm font-medium hover:opacity-60 transition-opacity whitespace-nowrap text-blue-600"
+                    className="inline-flex items-center gap-2 text-sm font-semibold text-blue-600 hover:text-blue-700 transition-colors"
                   >
-                    View Project →
+                    View Project
+                    <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                    </svg>
                   </a>
                 </div>
               </motion.div>
-            ))}
-          </div>
-        </motion.div>
+            );
+          })}
+        </div>
       </div>
     </section>
   );
