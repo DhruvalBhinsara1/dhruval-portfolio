@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import Navbar from './components/Navbar';
 import HeroSection from './components/HeroSection';
-import React, { Suspense, lazy } from 'react';
+import { Suspense, lazy } from 'react';
 
 const ProjectsGrid = lazy(() => import('./components/ProjectsGrid'));
 const AboutCard = lazy(() => import('./components/AboutCard'));
