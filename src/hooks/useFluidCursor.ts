@@ -1,27 +1,50 @@
 // @ts-nocheck
 const useFluidCursor = (canvas: HTMLCanvasElement | null) => {
   if (!canvas) return;
-  resizeCanvas();
 
-  //try to adjust settings
-
+  // Mobile performance optimization
+  const isMobile = typeof window !== 'undefined' && /Mobi|Android|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i.test(navigator.userAgent);
   let config = {
-    SIM_RESOLUTION: 128,
-    DYE_RESOLUTION: 1440,
-    CAPTURE_RESOLUTION: 512,
-    DENSITY_DISSIPATION: 3.5,
-    VELOCITY_DISSIPATION: 2,
+    SIM_RESOLUTION: isMobile ? 64 : 128,
+    DYE_RESOLUTION: isMobile ? 512 : 1440,
+    CAPTURE_RESOLUTION: isMobile ? 256 : 512,
+    DENSITY_DISSIPATION: isMobile ? 4.5 : 3.5,
+    VELOCITY_DISSIPATION: isMobile ? 3 : 2,
     PRESSURE: 0.1,
-    PRESSURE_ITERATIONS: 20,
-    CURL: 3,
-    SPLAT_RADIUS: 0.2,
-    SPLAT_FORCE: 6000,
-    SHADING: true,
-    COLOR_UPDATE_SPEED: 10,
+    PRESSURE_ITERATIONS: isMobile ? 10 : 20,
+    CURL: isMobile ? 1.5 : 3,
+    SPLAT_RADIUS: isMobile ? 0.15 : 0.2,
+    SPLAT_FORCE: isMobile ? 3000 : 6000,
+    SHADING: !isMobile,
+    COLOR_UPDATE_SPEED: isMobile ? 5 : 10,
     PAUSED: false,
     BACK_COLOR: { r: 0.5, g: 0, b: 0 },
     TRANSPARENT: true,
   };
+
+  // Lower devicePixelRatio for mobile
+  function getDevicePixelRatio() {
+    if (isMobile) return 1;
+    return window.devicePixelRatio || 1;
+  }
+
+  function scaleByPixelRatio(input) {
+    const pixelRatio = getDevicePixelRatio();
+    return Math.floor(input * pixelRatio);
+  }
+
+  function resizeCanvas() {
+    let width = scaleByPixelRatio(canvas.clientWidth);
+    let height = scaleByPixelRatio(canvas.clientHeight);
+    if (canvas.width != width || canvas.height != height) {
+      canvas.width = width;
+      canvas.height = height;
+      return true;
+    }
+    return false;
+  }
+
+  resizeCanvas();
 
   function pointerPrototype() {
     this.id = -1;
@@ -903,15 +926,31 @@ const useFluidCursor = (canvas: HTMLCanvasElement | null) => {
   let lastUpdateTime = Date.now();
   let colorUpdateTimer = 0.0;
 
+  // Reduce animation frame rate for mobile
+  let lastFrame = 0;
+  function requestFrame(fn) {
+    if (!isMobile) {
+      requestAnimationFrame(fn);
+    } else {
+      // ~30fps for mobile
+      const now = performance.now();
+      if (now - lastFrame > 33) {
+        lastFrame = now;
+        fn();
+      } else {
+        requestAnimationFrame(() => requestFrame(fn));
+      }
+    }
+  }
+
   function update() {
     const dt = calcDeltaTime();
-    // console.log(dt)
     if (resizeCanvas()) initFramebuffers();
     updateColors(dt);
     applyInputs();
     step(dt);
     render(null);
-    requestAnimationFrame(update);
+    requestFrame(update);
   }
 
   function calcDeltaTime() {
