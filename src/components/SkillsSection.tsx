@@ -31,7 +31,7 @@ const skillCategories = [
   {
     title: "Tools",
     icon: FileSpreadsheet,
-    skills: ["Jupyter", "VS Code", "Excel", "Google Analytics", "ETL"]
+    skills: ["Jupyter Notebook", "VS Code", "Excel", "Google Analytics", "ETL"]
   }
 ];
 

@@ -95,7 +95,7 @@ const ProjectsGrid: React.FC = () => {
                     {project.category.split(', ').map((tag) => (
                       <span
                         key={tag}
-                        className="px-3 py-1 bg-white/50 backdrop-blur-sm text-gray-700 rounded-full text-xs font-medium border border-gray-200/50"
+                        className="px-3 py-1 bg-black/90 backdrop-blur-sm text-white rounded-full text-xs font-medium border border-gray-200/50"
                       >
                         {tag}
                       </span>

@@ -4,13 +4,14 @@ import { motion } from "framer-motion";
 const AboutCard: React.FC = () => {
   return (
     <section id="about" className="py-16 md:py-24 px-6 md:px-12 bg-transparent">
-      <div className="max-w-6xl mx-auto">
+      <div className="max-w-6xl mx-auto flex flex-col items-center">
+        <h2 className="text-3xl md:text-5xl font-bold mb-8 text-center tracking-tight">About Me</h2>
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3 }}
           viewport={{ once: true }}
-          className="backdrop-blur-md bg-white/60 rounded-3xl shadow-2xl p-8 md:p-12 lg:p-16 border border-white/20"
+          className="backdrop-blur-md bg-white/60 rounded-3xl shadow-2xl p-8 md:p-12 lg:p-16 border border-white/20 w-full"
         >
           <div className="flex flex-col md:flex-row gap-8 md:gap-12 items-start">
             {/* Avatar Section */}
@@ -91,7 +92,7 @@ const AboutCard: React.FC = () => {
                 </p>
 
                 <p>
-                  When I'm not crunching numbers, you can find me reading or indulging in <span className="text-purple-600 font-medium">filmmaking</span>. Oh, and I have a soft spot for <span className="font-medium">indie rock music</span> and movies that explore art and the way of life. What about you? What brings you here today? 😊
+                  When I'm not crunching numbers, you can find me reading, indulging in <span className="text-purple-600 font-medium">filmmaking</span>, or geeking out over <span className="text-red-600 font-medium">Formula 1</span>. Oh, and I have a soft spot for <span className="font-medium">indie rock music</span> and movies that explore art and the way of life. What about you? What brings you here today? 😊
                 </p>
               </motion.div>
             </div>

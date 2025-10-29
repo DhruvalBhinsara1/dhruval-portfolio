@@ -8,7 +8,7 @@ const useFluidCursor = (canvas: HTMLCanvasElement | null) => {
     SIM_RESOLUTION: isMobile ? 64 : 128,
     DYE_RESOLUTION: isMobile ? 512 : 1440,
     CAPTURE_RESOLUTION: isMobile ? 256 : 512,
-    DENSITY_DISSIPATION: isMobile ? 4.5 : 3.5,
+  DENSITY_DISSIPATION: isMobile ? 2.2 : 1.5, // Even lower dissipation for much longer persistence
     VELOCITY_DISSIPATION: isMobile ? 3 : 2,
     PRESSURE: 0.1,
     PRESSURE_ITERATIONS: isMobile ? 10 : 20,
@@ -16,7 +16,7 @@ const useFluidCursor = (canvas: HTMLCanvasElement | null) => {
     SPLAT_RADIUS: isMobile ? 0.15 : 0.2,
     SPLAT_FORCE: isMobile ? 3000 : 6000,
     SHADING: !isMobile,
-    COLOR_UPDATE_SPEED: isMobile ? 5 : 10,
+  COLOR_UPDATE_SPEED: isMobile ? 5 : 10,
     PAUSED: false,
     BACK_COLOR: { r: 0.5, g: 0, b: 0 },
     TRANSPARENT: true,
@@ -1290,11 +1290,11 @@ const useFluidCursor = (canvas: HTMLCanvasElement | null) => {
   }
 
   function generateColor() {
-    let c = HSVtoRGB(Math.random(), 1.0, 1.0);
-    c.r *= 0.15;
-    c.g *= 0.15;
-    c.b *= 0.15;
-    return c;
+  let c = HSVtoRGB(Math.random(), 1.0, 1.0);
+  c.r *= 0.18; // Slightly brighter
+  c.g *= 0.18;
+  c.b *= 0.18;
+  return c;
   }
 
   function HSVtoRGB(h, s, v) {

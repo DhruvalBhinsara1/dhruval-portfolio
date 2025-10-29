@@ -15,10 +15,11 @@ const ResumeSection: React.FC = () => {
 
   return (
     <section id="resume" className="py-16 md:py-24 px-6 md:px-12 bg-transparent">
-      <div className="max-w-7xl mx-auto">
-        <h2 className="text-2xl md:text-4xl font-medium mb-12 md:mb-16">RESUME</h2>
+      <div className="max-w-7xl mx-auto flex flex-col items-center">
+        <h2 className="text-3xl md:text-5xl font-bold mb-4 text-center tracking-tight">Resume</h2>
+        <p className="text-lg md:text-2xl text-gray-500 mb-10 text-center">My experience, education, and skills in one document</p>
 
-        <div className="max-w-4xl backdrop-blur-md bg-white/60 border border-white/20 overflow-hidden rounded-xl shadow-lg">
+        <div className="max-w-4xl w-full backdrop-blur-md bg-white/60 border border-white/20 overflow-hidden rounded-xl shadow-lg flex flex-col items-center">
           <div
             style={{
               width: "100%",
@@ -47,7 +48,7 @@ const ResumeSection: React.FC = () => {
           </div>
 
           {numPages && numPages > 1 && (
-            <div className="flex items-center justify-center gap-6 py-4 border-t border-black/10">
+            <div className="flex items-center justify-center gap-6 py-4 border-t border-black/10 w-full">
               <button
                 onClick={() => setPageNumber(Math.max(1, pageNumber - 1))}
                 disabled={pageNumber <= 1}
@@ -72,7 +73,7 @@ const ResumeSection: React.FC = () => {
         <a
           href="/assets/Dhruval_Bhinsara_Resume.pdf"
           download
-          className="inline-block mt-6 px-6 py-2.5 text-sm bg-black text-white font-medium hover:opacity-80 transition-opacity"
+          className="inline-block mt-6 px-6 py-2.5 text-sm bg-black text-white font-medium hover:opacity-80 transition-opacity rounded-full shadow-lg"
         >
           Download PDF
         </a>

@@ -10,31 +10,60 @@ const memojiImages = [
 
 function MemojiAvatar() {
   const [index, setIndex] = React.useState(0);
-  const [hovered, setHovered] = React.useState(false);
+  const timerRef = React.useRef<number | null>(null);
 
-  // Only change image once per hover
+  // Change memoji randomly every 4-6 seconds
+  React.useEffect(() => {
+    timerRef.current && clearTimeout(timerRef.current);
+    timerRef.current = window.setTimeout(() => {
+      setIndex((i) => {
+        let next;
+        do {
+          next = Math.floor(Math.random() * memojiImages.length);
+        } while (next === i && memojiImages.length > 1);
+        return next;
+      });
+    }, 6000 + Math.floor(Math.random() * 7000));
+    return () => {
+      timerRef.current && clearTimeout(timerRef.current);
+    };
+  }, [index]);
+
+  // On hover, change immediately and reset timer
   const handleMouseEnter = () => {
-    if (!hovered) {
-      setIndex((i) => (i + 1) % memojiImages.length);
-      setHovered(true);
-    }
+    timerRef.current && clearTimeout(timerRef.current);
+    setIndex((i) => {
+      let next;
+      do {
+        next = Math.floor(Math.random() * memojiImages.length);
+      } while (next === i && memojiImages.length > 1);
+      return next;
+    });
   };
   const handleMouseLeave = () => {
-    setHovered(false);
+    // No action needed
   };
 
   return (
-    <motion.img
-      src={memojiImages[index]}
-      alt="Dhruval Bhinsara"
+    <motion.div
       className="w-32 h-32 md:w-40 md:h-40 lg:w-56 lg:h-56 object-contain cursor-pointer"
-      loading="lazy"
+      style={{ display: 'inline-block' }}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
-      whileHover={{ scale: 0.8 }}
-      transition={{ type: 'spring', stiffness: 400, damping: 20, duration: 0.3 }}
-      style={{ willChange: 'transform' }}
-    />
+    >
+      <motion.img
+        key={index}
+        src={memojiImages[index]}
+        alt="Dhruval Bhinsara"
+        loading="lazy"
+        initial={{ opacity: 0, scale: 0.8 }}
+        animate={{ opacity: 1, scale: 1 }}
+        exit={{ opacity: 0, scale: 0.8 }}
+        transition={{ type: 'spring', stiffness: 400, damping: 20, duration: 0.5 }}
+        style={{ willChange: 'transform', width: '100%', height: '100%' }}
+        whileHover={{ scale: 0.8 }}
+      />
+    </motion.div>
   );
 }
 
@@ -66,9 +95,10 @@ const HeroSection: React.FC = () => {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.3, delay: 0.1 }}
-        className="text-lg md:text-3xl text-gray-600 mb-4 font-medium"
+        className="text-lg md:text-3xl text-gray-600 mb-4 font-medium flex items-center gap-2"
       >
-        Hey, I'm Dhruval Bhinsara 👋
+        Hey, I'm Dhruval Bhinsara
+        <img src="/hand_emoji.png" alt="Waving Hand" className="inline-block w-7 h-7 align-middle" style={{marginLeft: '0.25em'}} />
       </motion.p>
       <motion.h1
         initial={{ opacity: 0, y: 20 }}
