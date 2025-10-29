@@ -23,7 +23,45 @@
   <meta name="twitter:image" content="/dhruval-profile.jpg" />
   </head>
   <body>
+    <div id="static-loader" style="position:fixed;inset:0;z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;background:linear-gradient(to bottom,#fff,#e0e7ff,#fff);min-height:100vh;width:100vw;">
+      <div style="font-size:2rem;font-weight:bold;color:#374151;margin-bottom:2rem;">Loading...</div>
+      <img id="static-memoji" src="/memoji.png" alt="Loading Memoji" style="width:6rem;height:6rem;object-fit:contain;animation:pushBounce 1s infinite;" />
+    </div>
     <div id="root"></div>
+    <script>
+      // Animate memoji every second
+      const memojiImages = [
+        '/memoji.png',
+        '/memoji2.png',
+        '/memoji3.png',
+        '/memoji4.png',
+        '/memoji5.png',
+      ];
+      let memojiIndex = 0;
+      setInterval(() => {
+        memojiIndex = (memojiIndex + 1) % memojiImages.length;
+        const img = document.getElementById('static-memoji');
+        if (img) img.src = memojiImages[memojiIndex];
+      }, 1000);
+      // Hide static loader when React mounts
+      window.addEventListener('DOMContentLoaded', () => {
+        const root = document.getElementById('root');
+        const observer = new MutationObserver(() => {
+          const loader = document.getElementById('static-loader');
+          if (loader && root && root.childNodes.length > 0) {
+            loader.style.display = 'none';
+          }
+        });
+        observer.observe(root, { childList: true });
+      });
+    </script>
+    <style>
+      @keyframes pushBounce {
+        0% { transform: translateY(0) scale(1); }
+        50% { transform: translateY(-12px) scale(1.1); }
+        100% { transform: translateY(0) scale(1); }
+      }
+    </style>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

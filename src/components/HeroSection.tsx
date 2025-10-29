@@ -65,7 +65,7 @@ const HeroSection: React.FC = () => {
       <motion.p
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ delay: typeof window !== 'undefined' && /Mobi|Android|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i.test(navigator.userAgent) ? 0.1 : 0.3 }}
+        transition={{ duration: 0.3, delay: 0.1 }}
         className="text-lg md:text-3xl text-gray-600 mb-4 font-medium"
       >
         Hey, I'm Dhruval Bhinsara 👋
@@ -73,7 +73,7 @@ const HeroSection: React.FC = () => {
       <motion.h1
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: typeof window !== 'undefined' && /Mobi|Android|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i.test(navigator.userAgent) ? 0.2 : 0.5 }}
+        transition={{ duration: 0.4, delay: 0.2 }}
         className="text-4xl md:text-6xl lg:text-7xl font-bold leading-tight text-black mb-8"
       >
         Aspiring Data Analyst
@@ -82,7 +82,7 @@ const HeroSection: React.FC = () => {
       <motion.div
         initial={{ scale: 0 }}
         animate={{ scale: 1 }}
-        transition={{ delay: 0.3, type: "spring", stiffness: 200 }}
+        transition={{ duration: 0.3, delay: 0.3 }}
         className="mb-12 flex justify-center"
       >
         <MemojiAvatar />
@@ -91,7 +91,7 @@ const HeroSection: React.FC = () => {
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.9 }}
+        transition={{ duration: 0.3, delay: 0.9 }}
       >
         <AISearch />
       </motion.div>
@@ -99,7 +99,7 @@ const HeroSection: React.FC = () => {
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 1.1 }}
+        transition={{ duration: 0.3, delay: 1.1 }}
         className="relative z-10 mt-8 mb-32"
       >
         <div className="flex flex-col items-center gap-4">
@@ -155,7 +155,7 @@ const HeroSection: React.FC = () => {
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 1.5, duration: 0.8 }}
+        transition={{ duration: 0.3, delay: 1.5 }}
         className="absolute bottom-4 md:bottom-8 left-0 right-0 z-0 overflow-hidden"
       >
         {/* <h3 className="text-7xl md:text-9xl lg:text-[11rem] font-bold text-gray-100/25 tracking-wider text-center px-6 md:px-12">

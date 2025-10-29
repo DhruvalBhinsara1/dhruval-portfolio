@@ -8,7 +8,7 @@ const AboutCard: React.FC = () => {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
+          transition={{ duration: 0.3 }}
           viewport={{ once: true }}
           className="backdrop-blur-md bg-white/60 rounded-3xl shadow-2xl p-8 md:p-12 lg:p-16 border border-white/20"
         >
@@ -17,7 +17,7 @@ const AboutCard: React.FC = () => {
             <motion.div
               initial={{ opacity: 0, scale: 0.8 }}
               whileInView={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
+              transition={{ duration: 0.3, delay: 0.2 }}
               viewport={{ once: true }}
               className="flex-shrink-0"
             >
@@ -38,7 +38,7 @@ const AboutCard: React.FC = () => {
               <motion.h2
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.3 }}
+                transition={{ duration: 0.3, delay: 0.3 }}
                 viewport={{ once: true }}
                 className="text-3xl md:text-4xl font-bold mb-2 text-black"
               >
@@ -48,7 +48,7 @@ const AboutCard: React.FC = () => {
               <motion.p
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.4 }}
+                transition={{ duration: 0.3, delay: 0.4 }}
                 viewport={{ once: true }}
                 className="text-gray-600 mb-6"
               >
@@ -58,7 +58,7 @@ const AboutCard: React.FC = () => {
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.5 }}
+                transition={{ duration: 0.3, delay: 0.5 }}
                 viewport={{ once: true }}
                 className="mb-6"
               >
@@ -82,7 +82,7 @@ const AboutCard: React.FC = () => {
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.6 }}
+                transition={{ duration: 0.3, delay: 0.6 }}
                 viewport={{ once: true }}
                 className="space-y-4 text-base leading-relaxed text-gray-700"
               >
