@@ -1,4 +1,43 @@
 import React from "react";
+
+const memojiImages = [
+  "/memoji.png",
+  "/memoji2.png",
+  "/memoji3.png",
+  "/memoji4.png",
+  "/memoji5.png",
+];
+
+function MemojiAvatar() {
+  const [index, setIndex] = React.useState(0);
+  const [hovered, setHovered] = React.useState(false);
+
+  // Only change image once per hover
+  const handleMouseEnter = () => {
+    if (!hovered) {
+      setIndex((i) => (i + 1) % memojiImages.length);
+      setHovered(true);
+    }
+  };
+  const handleMouseLeave = () => {
+    setHovered(false);
+  };
+
+  return (
+    <motion.img
+      src={memojiImages[index]}
+      alt="Dhruval Bhinsara"
+      className="w-32 h-32 md:w-40 md:h-40 lg:w-56 lg:h-56 object-contain cursor-pointer"
+      loading="lazy"
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+      whileHover={{ scale: 0.8 }}
+      transition={{ type: 'spring', stiffness: 400, damping: 20, duration: 0.3 }}
+      style={{ willChange: 'transform' }}
+    />
+  );
+}
+
 import { motion } from "framer-motion";
 import { User, Briefcase, Target, FileText, Mail } from "lucide-react";
 import AISearch from "./AISearch";
@@ -7,102 +46,55 @@ const HeroSection: React.FC = () => {
   return (
     <section
       id="home"
-      className="relative min-h-screen flex flex-col items-center justify-center px-6 md:px-12 py-32 bg-transparent overflow-hidden"
+      className="relative min-h-screen flex flex-col items-center justify-center w-full bg-transparent overflow-hidden m-0 p-0 pt-30"
     >
       {/* Subtle Animated Rainbow Blobs Background */}
       <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden">
         <motion.div
-          animate={{
-            scale: [1, 1.2, 1],
-            rotate: [0, 90, 0],
-            x: [0, 100, 0],
-            y: [0, -50, 0],
-          }}
-          transition={{
-            duration: 20,
-            repeat: Infinity,
-            ease: "easeInOut"
-          }}
-          className="absolute -top-32 -left-32 w-96 h-96 bg-gradient-to-br from-pink-200 via-purple-200 to-transparent rounded-full opacity-20 blur-3xl"
+          animate={{ scale: [1, 1.1, 1], rotate: [0, 45, 0] }}
+          transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
+          className="absolute -top-32 -left-32 w-64 h-64 bg-gradient-to-br from-pink-200 via-purple-200 to-transparent rounded-full opacity-20 blur-3xl"
         />
         <motion.div
-          animate={{
-            scale: [1, 1.3, 1],
-            rotate: [0, -90, 0],
-            x: [0, -100, 0],
-            y: [0, 50, 0],
-          }}
-          transition={{
-            duration: 25,
-            repeat: Infinity,
-            ease: "easeInOut"
-          }}
-          className="absolute -bottom-32 -right-32 w-96 h-96 bg-gradient-to-br from-blue-200 via-cyan-200 to-transparent rounded-full opacity-20 blur-3xl"
-        />
-        <motion.div
-          animate={{
-            scale: [1, 1.1, 1],
-            rotate: [0, 180, 0],
-            x: [0, -50, 0],
-            y: [0, 100, 0],
-          }}
-          transition={{
-            duration: 30,
-            repeat: Infinity,
-            ease: "easeInOut"
-          }}
-          className="absolute top-1/4 left-1/3 w-64 h-64 bg-gradient-to-br from-yellow-200 via-orange-200 to-transparent rounded-full opacity-15 blur-3xl"
+          animate={{ scale: [1, 1.1, 1], rotate: [0, -45, 0] }}
+          transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
+          className="absolute -bottom-32 -right-32 w-64 h-64 bg-gradient-to-br from-blue-200 via-cyan-200 to-transparent rounded-full opacity-20 blur-3xl"
         />
       </div>
-
+      {/* Main Content */}
+      <motion.p
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: typeof window !== 'undefined' && /Mobi|Android|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i.test(navigator.userAgent) ? 0.1 : 0.3 }}
+        className="text-lg md:text-3xl text-gray-600 mb-4 font-medium"
+      >
+        Hey, I'm Dhruval Bhinsara 👋
+      </motion.p>
+      <motion.h1
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: typeof window !== 'undefined' && /Mobi|Android|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i.test(navigator.userAgent) ? 0.2 : 0.5 }}
+        className="text-4xl md:text-6xl lg:text-7xl font-bold leading-tight text-black mb-8"
+      >
+        Aspiring Data Analyst
+      </motion.h1>
+      {/* Avatar - Memoji */}
+      <motion.div
+        initial={{ scale: 0 }}
+        animate={{ scale: 1 }}
+        transition={{ delay: 0.3, type: "spring", stiffness: 200 }}
+        className="mb-12 flex justify-center"
+      >
+        <MemojiAvatar />
+      </motion.div>
+      {/* AI Search Component */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8, ease: "easeOut" }}
-        className="max-w-4xl w-full text-center relative z-10 mb-16"
+        transition={{ delay: 0.9 }}
       >
-        <motion.p
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.3 }}
-          className="text-lg md:text-3xl text-gray-600 mb-4 font-medium"
-        >
-          Hey, I'm Dhruval Bhinsara 👋
-        </motion.p>
-
-        <motion.h1
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.5 }}
-          className="text-4xl md:text-6xl lg:text-7xl font-bold leading-tight text-black mb-8"
-        >
-          Aspiring Data Analyst
-        </motion.h1>
-
-        {/* Avatar - Memoji */}
-        <motion.div
-          initial={{ scale: 0 }}
-          animate={{ scale: 1 }}
-          transition={{ delay: 0.7, type: "spring", stiffness: 200 }}
-          className="mb-12 flex justify-center"
-        >
-          <img
-            src="/memoji.png"
-            alt="Dhruval Bhinsara"
-            className="w-40 h-40 md:w-48 md:h-48 lg:w-56 lg:h-56 object-contain"
-          />
-        </motion.div>
-
-        {/* AI Search Component */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.9 }}
-        >
-          <AISearch />
-        </motion.div>
+        <AISearch />
       </motion.div>
-
       {/* Navigation Pills - 3x2 Grid */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
@@ -113,11 +105,7 @@ const HeroSection: React.FC = () => {
         <div className="flex flex-col items-center gap-4">
           {/* First Row - 3 buttons */}
           <div className="flex gap-4 flex-wrap justify-center">
-            {[
-              { label: 'Me', icon: User, target: 'about' },
-              { label: 'Projects', icon: Briefcase, target: 'projects' },
-              { label: 'Skills', icon: Target, target: 'skills' },
-            ].map((item, index) => {
+            {[{ label: 'Me', icon: User, target: 'about' },{ label: 'Projects', icon: Briefcase, target: 'projects' },{ label: 'Skills', icon: Target, target: 'skills' },].map((item, index) => {
               const Icon = item.icon;
               return (
                 <motion.button
@@ -138,13 +126,9 @@ const HeroSection: React.FC = () => {
               );
             })}
           </div>
-          
           {/* Second Row - 2 buttons */}
           <div className="flex gap-4 flex-wrap justify-center">
-            {[
-              { label: 'Resume', icon: FileText, target: 'resume' },
-              { label: 'Contact', icon: Mail, target: 'contact' },
-            ].map((item, index) => {
+            {[{ label: 'Resume', icon: FileText, target: 'resume' },{ label: 'Contact', icon: Mail, target: 'contact' },].map((item, index) => {
               const Icon = item.icon;
               return (
                 <motion.button
@@ -167,7 +151,6 @@ const HeroSection: React.FC = () => {
           </div>
         </div>
       </motion.div>
-
       {/* Large Bottom Text - Only in Hero Section */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}

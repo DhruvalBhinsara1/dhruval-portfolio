@@ -24,8 +24,11 @@ const AboutCard: React.FC = () => {
               <div className="w-48 h-48 md:w-64 md:h-64 bg-gray-100 rounded-full flex items-center justify-center overflow-hidden">
                 <img 
                   src="/dhruval-profile.jpg" 
+                  srcSet="/dhruval-profile.jpg 320w, /dhruval-profile.jpg 640w"
+                  sizes="(max-width: 640px) 320px, 640px"
                   alt="Dhruval Bhinsara"
                   className="w-full h-full object-cover"
+                  loading="lazy"
                 />
               </div>
             </motion.div>

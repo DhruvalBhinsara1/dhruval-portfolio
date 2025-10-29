@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Send, Loader2, ExternalLink } from 'lucide-react';
+import { Loader2, ExternalLink } from 'lucide-react';
 
 interface Message {
   id: string;
@@ -182,7 +182,7 @@ export default function AISearch() {
   };
 
   return (
-    <div className="w-full max-w-2xl mx-auto">
+  <div className="w-full max-w-6xl mx-auto">
       {/* Messages Container */}
       <AnimatePresence>
         {messages.length > 0 && (
@@ -241,26 +241,31 @@ export default function AISearch() {
                 </div>
               </motion.div>
             )}
-            <div ref={messagesEndRef} />
           </motion.div>
         )}
       </AnimatePresence>
-
-      {/* Input Form */}
-      <form onSubmit={handleSubmit} className="relative">
+      {/* Input Form - Wider */}
+      <form
+        onSubmit={handleSubmit}
+        className="flex items-center px-4 py-2 bg-white/30 backdrop-blur-md rounded-full mt-4 shadow-lg border border-white/20"
+      >
         <input
           type="text"
           value={input}
           onChange={(e) => setInput(e.target.value)}
-          placeholder="Ask me anything..."
-          className="w-full px-6 py-4 pr-14 rounded-full backdrop-blur-xl bg-white/40 border border-white/30 focus:bg-white/50 focus:outline-none transition-all duration-300 text-gray-800 placeholder-gray-500 shadow-lg"
+          className="flex-1 min-w-[200px] md:min-w-[350px] lg:min-w-[500px] px-4 py-3 rounded-full bg-white/30 backdrop-blur-md text-gray-900 placeholder-gray-500 focus:outline-none text-lg border-none"
+          placeholder="Ask me anything!"
+          disabled={isLoading}
+          maxLength={200}
         />
         <button
           type="submit"
-          disabled={!input.trim() || isLoading}
-          className="absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 bg-gray-800 text-white rounded-full flex items-center justify-center hover:scale-110 hover:bg-gray-900 transition-all disabled:opacity-50 disabled:hover:scale-100"
+          className="ml-2 w-11 h-11 flex items-center justify-center rounded-full bg-white/60 backdrop-blur-md border border-white/30 hover:bg-white/80 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg"
+          disabled={isLoading || !input.trim()}
         >
-          <Send className="w-4 h-4" />
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#007aff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6">
+            <path d="M5 12h14M12 5l7 7-7 7" />
+          </svg>
         </button>
       </form>
     </div>

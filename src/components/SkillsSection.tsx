@@ -42,7 +42,7 @@ const SkillsSection: React.FC = () => {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
+          transition={{ duration: typeof window !== 'undefined' && /Mobi|Android|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i.test(navigator.userAgent) ? 0.3 : 0.6 }}
           viewport={{ once: true }}
           className="text-center mb-12 md:mb-16"
         >
@@ -60,7 +60,10 @@ const SkillsSection: React.FC = () => {
                 key={category.title}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
+                transition={{
+                  duration: typeof window !== 'undefined' && /Mobi|Android|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i.test(navigator.userAgent) ? 0.3 : 0.5,
+                  delay: typeof window !== 'undefined' && /Mobi|Android|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i.test(navigator.userAgent) ? index * 0.05 : index * 0.1
+                }}
                 viewport={{ once: true }}
                 whileHover={{ y: -8, scale: 1.02 }}
                 className="backdrop-blur-md bg-white/60 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden border border-white/20 p-6"

@@ -12,7 +12,7 @@ const FluidCursor = () => {
   }, []);
 
   return (
-  <div className="fixed top-0 left-0 z-0 pointer-events-none">
+  <div className="fixed top-0 left-0 z-0 pointer-events-none" style={{ zIndex: 0 }}>
       <canvas ref={canvasRef} id="fluid" className="w-screen h-screen" />
     </div>
   );
