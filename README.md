@@ -1,10 +1,10 @@
 
 # 👋 Hi, I'm Dhruval Bhinsara!
 
-Welcome to my personal portfolio website. I'm an aspiring Data Analyst and Computer Science major from Surat, Gujarat, India. I love turning complex data into meaningful insights and building beautiful, modern web experiences.
+Welcome to my personal portfolio website. I'm a Computer Science student from Surat, Gujarat, India with a foundation in data analytics and a growing focus on ML engineering and mobile development. I love turning complex ideas into useful, polished software experiences.
 
 ## 🚀 About This Project
-This site is my digital home—showcasing my skills, projects, resume, and a bit about who I am. It's built with React, Vite, and Tailwind CSS, and designed to be fast, responsive, and friendly for all devices.
+This site is my digital home, showcasing my analytics projects, current ML and mobile development path, resume, and a bit about who I am. It's built with React, Vite, and Tailwind CSS, and designed to be fast, responsive, and friendly for all devices.
 
 ## ✨ Highlights
 - 📱 Mobile-first, responsive design
@@ -15,7 +15,7 @@ This site is my digital home—showcasing my skills, projects, resume, and a bit
 - 🛠️ Project and skills showcase
 
 ## 🧑‍💻 My Skills
-Python | SQL | Power BI | Tableau | Data Analysis | Machine Learning | React | Oracle Technologies
+Python | SQL | Power BI | Tableau | Data Analysis | Machine Learning | Swift | SwiftUI | React Native | Expo | React
 
 ## 📂 Folder Structure
 - `src/` — React components and app logic

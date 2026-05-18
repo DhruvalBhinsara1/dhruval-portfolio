@@ -1,10 +1,61 @@
 import nodemailer from 'nodemailer';
 
-export default async function handler(req, res) {
-  // Enable CORS for all origins (adjust as needed for production)
-  res.setHeader('Access-Control-Allow-Origin', '*');
+const MAX_NAME_LENGTH = 100;
+const MAX_EMAIL_LENGTH = 254;
+const MAX_MESSAGE_LENGTH = 3000;
+
+function normalizeField(value, maxLength) {
+  return String(value ?? '').trim().slice(0, maxLength);
+}
+
+function stripHeaderNewlines(value) {
+  return value.replace(/[\r\n]+/g, ' ');
+}
+
+function escapeHtml(value) {
+  return value
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+function isValidEmail(email) {
+  return /^[^\s@<>]+@[^\s@<>]+\.[^\s@<>]+$/.test(email);
+}
+
+function getAllowedOrigins() {
+  return (process.env.ALLOWED_ORIGINS || '')
+    .split(',')
+    .map((origin) => origin.trim())
+    .filter(Boolean);
+}
+
+function applyCors(req, res) {
+  const allowedOrigins = getAllowedOrigins();
+  const origin = req.headers.origin;
+
+  if (!allowedOrigins.length) {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+  } else if (!origin || allowedOrigins.includes(origin)) {
+    if (origin) {
+      res.setHeader('Access-Control-Allow-Origin', origin);
+      res.setHeader('Vary', 'Origin');
+    }
+  } else {
+    return false;
+  }
+
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  return true;
+}
+
+export default async function handler(req, res) {
+  if (!applyCors(req, res)) {
+    return res.status(403).json({ error: 'Origin not allowed.' });
+  }
 
   // Handle preflight request
   if (req.method === 'OPTIONS') {
@@ -15,10 +66,30 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const { name, email, message } = req.body;
+  const { name, email, message } = req.body ?? {};
   if (!name || !email || !message) {
     return res.status(400).json({ error: 'All fields are required.' });
   }
+
+  const form = {
+    name: stripHeaderNewlines(normalizeField(name, MAX_NAME_LENGTH)),
+    email: stripHeaderNewlines(normalizeField(email, MAX_EMAIL_LENGTH)).toLowerCase(),
+    message: normalizeField(message, MAX_MESSAGE_LENGTH),
+  };
+
+  if (!form.name || !form.email || !form.message) {
+    return res.status(400).json({ error: 'All fields are required.' });
+  }
+
+  if (!isValidEmail(form.email)) {
+    return res.status(400).json({ error: 'Please enter a valid email address.' });
+  }
+
+  const safe = {
+    name: escapeHtml(form.name),
+    email: escapeHtml(form.email),
+    message: escapeHtml(form.message).replace(/\n/g, '<br>'),
+  };
 
   try {
     const transporter = nodemailer.createTransport({
@@ -79,15 +150,15 @@ export default async function handler(req, res) {
     <h2>New Contact Message</h2>
     <div class="field">
       <div class="label">Name</div>
-      <div class="value">${name}</div>
+      <div class="value">${safe.name}</div>
     </div>
     <div class="field">
       <div class="label">Email</div>
-      <div class="value">${email}</div>
+      <div class="value">${safe.email}</div>
     </div>
     <div class="field">
       <div class="label">Message</div>
-      <div class="value">${message.replace(/\n/g, '<br>')}</div>
+      <div class="value">${safe.message}</div>
     </div>
   </div>
 </body>
@@ -98,8 +169,9 @@ export default async function handler(req, res) {
     await transporter.sendMail({
       from: process.env.GMAIL_USER,
       to: process.env.GMAIL_USER,
-      subject: `Portfolio Contact: ${name}`,
-      text: `From: ${name} <${email}>\n\n${message}`,
+      replyTo: form.email,
+      subject: `Portfolio Contact: ${form.name}`,
+      text: `From: ${form.name} <${form.email}>\n\n${form.message}`,
       html,
     });
 
@@ -123,15 +195,15 @@ export default async function handler(req, res) {
         <p>We have received your message and will get back to you soon. Here is a copy of your submission for your records:</p>
         <div class="field">
           <div class="label">Name</div>
-          <div class="value">${name}</div>
+          <div class="value">${safe.name}</div>
         </div>
         <div class="field">
           <div class="label">Email</div>
-          <div class="value">${email}</div>
+          <div class="value">${safe.email}</div>
         </div>
         <div class="field">
           <div class="label">Message</div>
-          <div class="value">${message.replace(/\n/g, '<br>')}</div>
+          <div class="value">${safe.message}</div>
         </div>
         <div class="footer">This is an automated confirmation. If you did not submit this, please ignore this email.</div>
       </div>
@@ -141,9 +213,9 @@ export default async function handler(req, res) {
 
     await transporter.sendMail({
       from: process.env.GMAIL_USER,
-      to: email,
+      to: form.email,
       subject: `Confirmation: Your message to Dhruval`,
-      text: `Hi ${name},\n\nThank you for contacting Dhruval! We have received your message and will get back to you soon.\n\nHere is a copy of your submission:\n\nName: ${name}\nEmail: ${email}\nMessage:\n${message}\n\nThis is an automated confirmation. If you did not submit this, please ignore this email.`,
+      text: `Hi ${form.name},\n\nThank you for contacting Dhruval! We have received your message and will get back to you soon.\n\nHere is a copy of your submission:\n\nName: ${form.name}\nEmail: ${form.email}\nMessage:\n${form.message}\n\nThis is an automated confirmation. If you did not submit this, please ignore this email.`,
       html: confirmationHtml,
     });
 

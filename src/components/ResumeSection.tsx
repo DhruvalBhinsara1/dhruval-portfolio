@@ -17,9 +17,9 @@ const ResumeSection: React.FC = () => {
     <section id="resume" className="py-16 md:py-24 px-6 md:px-12 bg-transparent">
       <div className="max-w-7xl mx-auto flex flex-col items-center">
         <h2 className="text-3xl md:text-5xl font-bold mb-4 text-center tracking-tight">Resume</h2>
-        <p className="text-lg md:text-2xl text-gray-500 mb-10 text-center">My experience, education, and skills in one document</p>
+        <p className="text-lg md:text-2xl text-gray-500 mb-10 text-center">Education, projects, certifications, and the current skill direction in one place</p>
 
-        <div className="max-w-4xl w-full backdrop-blur-md bg-white/60 border border-white/20 overflow-hidden rounded-xl shadow-lg flex flex-col items-center">
+        <div className="flex w-full max-w-4xl flex-col items-center overflow-hidden rounded-[1.5rem] border border-black/10 bg-white/70 shadow-[0_24px_70px_rgba(15,23,42,0.10)] backdrop-blur-xl">
           <div
             style={{
               width: "100%",
@@ -73,7 +73,7 @@ const ResumeSection: React.FC = () => {
         <a
           href="/assets/Dhruval_Bhinsara_Resume.pdf"
           download
-          className="inline-block mt-6 px-6 py-2.5 text-sm bg-black text-white font-medium hover:opacity-80 transition-opacity rounded-full shadow-lg"
+          className="mt-6 inline-block rounded-full bg-black px-6 py-2.5 text-sm font-medium text-white shadow-lg transition-opacity hover:opacity-80"
         >
           Download PDF
         </a>

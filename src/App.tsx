@@ -2,19 +2,19 @@ import { useEffect } from 'react';
 import Navbar from './components/Navbar';
 import HeroSection from './components/HeroSection';
 import { Suspense, lazy } from 'react';
-import LoadingScreen from './components/LoadingScreen';
 
-function delayImport<T>(promise: Promise<T>): Promise<T> {
-  return new Promise(resolve => setTimeout(() => promise.then(resolve), 2000));
+function SectionFallback() {
+  return <div className="min-h-24" aria-hidden="true" />;
 }
-const ProjectsGrid = lazy(() => delayImport(import('./components/ProjectsGrid')));
-const AboutCard = lazy(() => delayImport(import('./components/AboutCard')));
-const SkillsSection = lazy(() => delayImport(import('./components/SkillsSection')));
-const ResumeSection = lazy(() => delayImport(import('./components/ResumeSection')));
-const ContactForm = lazy(() => delayImport(import('./components/ContactForm')));
-const Footer = lazy(() => delayImport(import('./components/Footer')));
-const BackToTopButton = lazy(() => delayImport(import('./components/BackToTopButton')));
-const FluidCursor = lazy(() => delayImport(import('./components/FluidCursor')));
+
+const ProjectsGrid = lazy(() => import('./components/ProjectsGrid'));
+const AboutCard = lazy(() => import('./components/AboutCard'));
+const SkillsSection = lazy(() => import('./components/SkillsSection'));
+const ResumeSection = lazy(() => import('./components/ResumeSection'));
+const ContactForm = lazy(() => import('./components/ContactForm'));
+const Footer = lazy(() => import('./components/Footer'));
+const BackToTopButton = lazy(() => import('./components/BackToTopButton'));
+const FluidCursor = lazy(() => import('./components/FluidCursor'));
 
 function App() {
   // Scroll to top on page load
@@ -26,7 +26,7 @@ function App() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-white via-gray-50/30 to-white text-black snap-y snap-mandatory relative">
       {!isMobile && (
-        <Suspense fallback={<LoadingScreen />}>
+        <Suspense fallback={null}>
           <FluidCursor />
         </Suspense>
       )}
@@ -34,29 +34,29 @@ function App() {
       <div className="relative z-10">
         <HeroSection />
         <div className="h-px bg-gradient-to-r from-transparent via-gray-200/50 to-transparent" />
-        <Suspense fallback={<LoadingScreen />}>
+        <Suspense fallback={<SectionFallback />}>
           <AboutCard />
         </Suspense>
         <div className="h-px bg-gradient-to-r from-transparent via-gray-200/50 to-transparent" />
-        <Suspense fallback={<LoadingScreen />}>
+        <Suspense fallback={<SectionFallback />}>
           <ProjectsGrid />
         </Suspense>
         <div className="h-px bg-gradient-to-r from-transparent via-gray-200/50 to-transparent" />
-        <Suspense fallback={<LoadingScreen />}>
+        <Suspense fallback={<SectionFallback />}>
           <SkillsSection />
         </Suspense>
         <div className="h-px bg-gradient-to-r from-transparent via-gray-200/50 to-transparent" />
-        <Suspense fallback={<LoadingScreen />}>
+        <Suspense fallback={<SectionFallback />}>
           <ResumeSection />
         </Suspense>
         <div className="h-px bg-gradient-to-r from-transparent via-gray-200/50 to-transparent" />
-        <Suspense fallback={<LoadingScreen />}>
+        <Suspense fallback={<SectionFallback />}>
           <ContactForm />
         </Suspense>
-        <Suspense fallback={<LoadingScreen />}>
+        <Suspense fallback={<SectionFallback />}>
           <Footer />
         </Suspense>
-        <Suspense fallback={<LoadingScreen />}>
+        <Suspense fallback={null}>
           <BackToTopButton />
         </Suspense>
       </div>

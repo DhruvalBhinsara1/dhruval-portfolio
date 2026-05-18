@@ -1,560 +1,391 @@
-import { useState, useRef, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Loader2, ExternalLink } from 'lucide-react';
+import { useMemo, useState } from "react";
+import type { FormEvent } from "react";
+import { motion } from "framer-motion";
+import { ArrowRight, ExternalLink, FileText, Mail, Search, X } from "lucide-react";
+import { guidePrompts, portfolioHobbies, portfolioProjects, skillGroups } from "@/data/portfolio";
+import type { GuideAction, GuideResponse, PortfolioProject } from "@/data/portfolio";
 
-interface Message {
-  id: string;
-  text: string;
-  isUser: boolean;
-  timestamp: number;
-  links?: { label: string; target: string }[];
+const defaultResponse: GuideResponse = {
+  title: "Start with a path",
+  body: "Search the portfolio by project type, skill area, hobbies, resume, or contact. The guide will point you to the strongest section or project.",
+  actions: [
+    { label: "Projects", kind: "section", target: "projects" },
+    { label: "Skills", kind: "section", target: "skills" },
+    { label: "Resume", kind: "section", target: "resume" },
+  ],
+  matchedProjects: portfolioProjects.filter((project) => project.priority === "featured"),
+};
+
+const guidePatterns = {
+  skills: [
+    /\bskills?\b/i,
+    /\bskill\s*set\b/i,
+    /\btechnical\s+skills?\b/i,
+    /\btech\s+stack\b/i,
+    /\btool(?:s|ing)?\b/i,
+    /\bcapabilit(?:y|ies)\b/i,
+    /\bwhat\s+(?:can|do(?:es)?)\s+(?:you|he|dhruval).*(?:use|know|build)\b/i,
+  ],
+  hobbies: [
+    /\bhobb(?:y|ies)\b/i,
+    /\binterests?\b/i,
+    /\boutside\s+(?:of\s+)?(?:code|coding|work)\b/i,
+    /\bfree\s*time\b/i,
+    /\bafter\s+hours\b/i,
+    /\bpersonal\s+side\b/i,
+  ],
+};
+
+function normalizeQuery(query: string) {
+  return query.toLowerCase().replace(/[^a-z0-9+#.\s-]/g, " ").replace(/\s+/g, " ").trim();
+}
+
+function hasAny(query: string, terms: string[]) {
+  return terms.some((term) => query.includes(term));
+}
+
+function matchesAnyPattern(query: string, patterns: RegExp[]) {
+  return patterns.some((pattern) => pattern.test(query));
+}
+
+function sectionAction(label: string, target: GuideAction["target"]): GuideAction {
+  return { label, kind: "section", target };
+}
+
+function projectMatches(project: PortfolioProject, query: string) {
+  const haystack = [
+    project.title,
+    project.category,
+    project.description,
+    project.domain,
+    ...project.tags,
+  ].join(" ").toLowerCase();
+
+  return query.split(" ").some((token) => token.length > 2 && haystack.includes(token));
+}
+
+function getGuideResponse(rawQuery: string): GuideResponse {
+  const query = normalizeQuery(rawQuery);
+
+  if (!query) {
+    return defaultResponse;
+  }
+
+  if (hasAny(query, ["resume", "cv", "download", "profile"])) {
+    return {
+      title: "Resume",
+      body: "The resume section has the latest PDF viewer and download link. It is the quickest way to scan education, skills, and recent direction.",
+      actions: [
+        sectionAction("Open resume", "resume"),
+        { label: "Download PDF", kind: "external", target: "/assets/Dhruval_Bhinsara_Resume.pdf" },
+      ],
+    };
+  }
+
+  if (hasAny(query, ["contact", "email", "connect", "message", "reach"])) {
+    return {
+      title: "Contact",
+      body: "Use the contact form for project ideas, collaboration, feedback, or a direct hello.",
+      actions: [
+        sectionAction("Open contact form", "contact"),
+        { label: "Email directly", kind: "external", target: "mailto:dhruvalbhinsara460@gmail.com" },
+      ],
+    };
+  }
+
+  if (matchesAnyPattern(query, guidePatterns.hobbies)) {
+    return {
+      title: "Hobbies and interests",
+      body: "Outside code, Dhruval spends time reading, filmmaking, following Formula 1, and listening to indie rock. It gives the portfolio a little more of the person behind the project work.",
+      actions: [sectionAction("Read about Dhruval", "about"), sectionAction("Contact", "contact")],
+      detailItems: portfolioHobbies,
+    };
+  }
+
+  if (hasAny(query, ["ml", "machine", "model", "scikit", "tensorflow", "fasal", "crop"])) {
+    const matches = portfolioProjects.filter((project) =>
+      ["ml", "learning"].includes(project.domain)
+    );
+    return {
+      title: "ML work",
+      body: "Start with FasalVaidya for product-shaped ML work, then use Machine Learning Journey to see the study trail behind the fundamentals.",
+      actions: [sectionAction("Open projects", "projects"), sectionAction("See skills", "skills")],
+      matchedProjects: matches,
+    };
+  }
+
+  if (hasAny(query, ["mobile", "ios", "swift", "swiftui", "react native", "expo", "app"])) {
+    const matches = portfolioProjects.filter((project) =>
+      ["mobile", "ml"].includes(project.domain)
+    );
+    return {
+      title: "Mobile work",
+      body: "Traveloop shows the clearest mobile-app direction. FasalVaidya also matters here because it combines a mobile scanner with model-backed diagnosis.",
+      actions: [sectionAction("Open projects", "projects"), sectionAction("Mobile skills", "skills")],
+      matchedProjects: matches,
+    };
+  }
+
+  if (hasAny(query, ["best", "featured", "review", "strongest", "top"])) {
+    const matches = portfolioProjects.filter((project) => project.priority === "featured");
+    return {
+      title: "Best projects to review",
+      body: "Review these first: FasalVaidya for ML product depth, Traveloop for full-stack mobile work, and Machine Learning Journey for the learning system.",
+      actions: [sectionAction("Open projects", "projects"), sectionAction("Open resume", "resume")],
+      matchedProjects: matches,
+    };
+  }
+
+  if (hasAny(query, ["data", "analytics", "sql", "python", "dashboard", "power bi", "tableau", "excel"])) {
+    const matches = portfolioProjects.filter((project) => project.domain === "analytics");
+    return {
+      title: "Analytics foundation",
+      body: "The analytics work covers SQL, Python, dashboards, and reporting. E-commerce Funnel Analysis is the strongest first stop.",
+      actions: [sectionAction("Open projects", "projects"), sectionAction("See skills", "skills")],
+      matchedProjects: matches.slice(0, 4),
+    };
+  }
+
+  if (matchesAnyPattern(query, guidePatterns.skills)) {
+    return {
+      title: "Skills",
+      body: "The skill set is grouped around Analytics, ML Engineering, Mobile/iOS, Backend & Data, and Tools. The current stack includes Python, SQL, Pandas, Scikit-learn, TensorFlow basics, Swift, SwiftUI, React Native, Express, Flask, Postgres, Git, Jupyter, Xcode, and TypeScript.",
+      actions: [sectionAction("Open skills", "skills"), sectionAction("Open resume", "resume")],
+      detailItems: skillGroups.map((group) => group.title),
+      matchedSkills: skillGroups,
+    };
+  }
+
+  const directMatches = portfolioProjects.filter((project) => projectMatches(project, query));
+  if (directMatches.length > 0) {
+    return {
+      title: "Matched projects",
+      body: "These projects are the closest match for your search.",
+      actions: [sectionAction("Open projects", "projects")],
+      matchedProjects: directMatches.slice(0, 3),
+    };
+  }
+
+  return {
+    title: "I don’t have that detail on the site yet",
+    body: "The portfolio has project work, skills, hobbies, resume details, and contact information. For anything more specific, the contact form is the best next step.",
+    actions: [
+      sectionAction("Projects", "projects"),
+      sectionAction("Resume", "resume"),
+      sectionAction("Contact", "contact"),
+    ],
+  };
+}
+
+function runAction(action: GuideAction) {
+  if (action.kind === "external") {
+    window.open(action.target, "_blank", "noopener,noreferrer");
+    return;
+  }
+
+  document.getElementById(action.target)?.scrollIntoView({ behavior: "smooth" });
 }
 
 export default function AISearch() {
-  const [messages, setMessages] = useState<Message[]>([]);
-  const [input, setInput] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
+  const [query, setQuery] = useState("");
+  const [submittedQuery, setSubmittedQuery] = useState("");
 
-  // Clear chat handler
-  const handleClearChat = () => {
-    if (!isLoading) {
-      setMessages([]);
-      // Smoothly scroll to top after clearing
-      setTimeout(() => {
-        const container = document.querySelector('.max-h-96.overflow-y-auto');
-        if (container) {
-          container.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-      }, 100);
-    }
-  };
-  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const response = useMemo(
+    () => getGuideResponse(submittedQuery || query),
+    [query, submittedQuery]
+  );
 
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' });
+  const handleSubmit = (event: FormEvent) => {
+    event.preventDefault();
+    setSubmittedQuery(query.trim());
   };
 
-  useEffect(() => {
-    if (messages.length > 0) {
-      scrollToBottom();
-    }
-  }, [messages]);
-
-  // AI Knowledge Base about Dhruval with interactive links
-  const getAIResponse = (query: string): { text: string; links?: { label: string; target: string }[] } => {
-    // Normalize input: lowercase, trim, remove punctuation
-    const normalized = query
-      .toLowerCase()
-      .replace(/[.,!?]/g, '')
-      .replace(/\s+/g, ' ')
-      .trim();
-
-    // Helper for keyword/synonym matching
-    const has = (words: string | string[]) => {
-      if (Array.isArray(words)) {
-        return words.some(w => normalized.includes(w));
-      }
-      return normalized.includes(words);
-    };
-
-    // Special intro for the AI
-    if (has(['who are you', 'what can you do', 'ai', 'assistant', 'are you smart', 'how smart'])) {
-      return {
-        text: "I'm not just any AI—I'm your personal portfolio assistant, powered by a custom knowledge base and a dash of personality! Ask me anything about my skills, favorites, or even weird questions. I'll do my best to answer, even if you get creative!",
-        links: [
-          { label: "About Me", target: "about" },
-          { label: "Projects", target: "projects" },
-          { label: "Skills", target: "skills" }
-        ]
-      };
-    }
-
-    // Fuzzy matching for car/favorites (more powerful intent inference)
-    if (normalized.includes('car') || normalized.includes('amg') || normalized.includes('mercedes')) {
-      return {
-        text: "My dream car is the Mercedes AMG Black Series. It's a masterpiece of engineering and pure performance!",
-        links: [
-          { label: "About Me", target: "about" }
-        ]
-      };
-    }
-    if (normalized.includes('f1 driver') || normalized.includes('verstappen') || normalized.includes('max')) {
-      return {
-        text: "My favorite Formula 1 driver is Max Verstappen. His skill, determination, and racing spirit are truly inspiring!",
-        links: [
-          { label: "See My Skills", target: "skills" }
-        ]
-      };
-    }
-    if (normalized.includes('team') || normalized.includes('red bull') || normalized.includes('mclaren')) {
-      return {
-        text: "My favorite F1 teams are Red Bull and McLaren. I admire their innovation, teamwork, and relentless pursuit of excellence!",
-        links: [
-          { label: "View Projects", target: "projects" }
-        ]
-      };
-    }
-    if (normalized.includes('color') || normalized.includes('purple') || normalized.includes('lavender')) {
-      return {
-        text: "My favorite colors are purple and lavender. They're vibrant, creative, and always inspire me!",
-        links: [
-          { label: "See My Projects", target: "projects" }
-        ]
-      };
-    }
-    if (normalized.includes('food') || normalized.includes('pizza')) {
-      return {
-        text: "Pizza is my absolute favorite food—especially when it's loaded with cheese and a crispy crust!",
-        links: [
-          { label: "Contact Me", target: "contact" }
-        ]
-      };
-    }
-    if (normalized.includes('animal') || normalized.includes('cat')) {
-      return {
-        text: "My favorite animal is the cat. I love their independence, curiosity, and the way they always find the coziest spot in the room.",
-        links: [
-          { label: "More About Me", target: "about" }
-        ]
-      };
-    }
-  if (has(['favorite food', 'favourite food', 'food you like', 'best food', 'pizza'])) {
-      return {
-        text: "Pizza is my absolute favorite food—especially when it's loaded with cheese and a crispy crust!",
-        links: [
-          { label: "Contact Me", target: "contact" }
-        ]
-      };
-    }
-  if (has(['favorite color', 'favourite color', 'colour you like', 'best color', 'purple', 'lavender'])) {
-      return {
-        text: "My favorite colors are purple and lavender. They're vibrant, creative, and always inspire me!",
-        links: [
-          { label: "See My Projects", target: "projects" }
-        ]
-      };
-    }
-  if (has(['favorite car', 'favourite car', 'dream car', 'car you want', 'car you like', 'mercedes'])) {
-      return {
-        text: "My dream car is the Mercedes AMG Black Series. It's a masterpiece of engineering and pure performance!",
-        links: [
-          { label: "About Me", target: "about" }
-        ]
-      };
-    }
-  if (has(['favorite f1 driver', 'favourite f1 driver', 'best f1 driver', 'f1 driver you like', 'max verstappen'])) {
-      return {
-        text: "My favorite Formula 1 driver is Max Verstappen. His skill, determination, and racing spirit are truly inspiring!",
-        links: [
-          { label: "See My Skills", target: "skills" }
-        ]
-      };
-    }
-  if (has(['favorite team', 'favourite team', 'f1 team you like', 'best team', 'red bull', 'mclaren'])) {
-      return {
-        text: "My favorite F1 teams are Red Bull and McLaren. I admire their innovation, teamwork, and relentless pursuit of excellence!",
-        links: [
-          { label: "View Projects", target: "projects" }
-        ]
-      };
-    }
-
-    // Weird and complex questions (first person)
-  if (has(['favorite cheese', 'favourite cheese', 'cheese you like']) || /cheese.*dream/i.test(normalized)) {
-      return {
-        text: "My favorite cheese is Data Cheese, aged in SQL barrels and served with a side of Python crackers. I once dreamt of a cheese wheel rolling through a database!",
-        links: [
-          { label: "See My Skills", target: "skills" },
-          { label: "Contact Me", target: "contact" }
-        ]
-      };
-    }
-  if (has(['if you were a fruit', 'fruit you would be', 'fruit like'])) {
-      return {
-        text: "If I were a fruit, I'd be a data-berry: sweet, packed with insights, and always ready to be picked for analysis!",
-        links: [
-          { label: "About Me", target: "about" }
-        ]
-      };
-    }
-  if (/alien|extraterrestrial|ufo|space/.test(normalized)) {
-      return {
-        text: "I've never been abducted by aliens, but if I met one, I'd probably ask for their data logs and build a Power BI dashboard of the galaxy!",
-        links: [
-          { label: "See My Projects", target: "projects" }
-        ]
-      };
-    }
-  if (/quantum|multiverse|parallel universe/.test(normalized)) {
-      return {
-        text: "In a parallel universe, I'm a quantum data wizard, visualizing Schrödinger's cat in Tableau and running SQL queries on entangled databases.",
-        links: [
-          { label: "View Resume", target: "resume" }
-        ]
-      };
-    }
-  if (/swap places/.test(normalized)) {
-      return {
-        text: "If I could swap places with my AI, I'd finally get to taste real coffee and experience the thrill of debugging code at 2am!",
-        links: [
-          { label: "Contact Me", target: "contact" }
-        ]
-      };
-    }
-  if (/time machine/.test(normalized)) {
-      return {
-        text: "I'd travel to the future, collect advanced data science techniques, and bring them back to revolutionize today's analytics!",
-        links: [
-          { label: "See My Skills", target: "skills" }
-        ]
-      };
-    }
-  if (/sound of data/.test(normalized)) {
-      return {
-        text: "The sound of data is a gentle hum of servers, the click of keyboard keys, and the occasional cheer when a query finally works!",
-        links: [
-          { label: "View Projects", target: "projects" }
-        ]
-      };
-    }
-  if (/speak to animals|talk to animals/.test(normalized)) {
-      return {
-        text: "I can't speak to animals, but I can analyze their migration patterns and visualize their journeys in Power BI!",
-        links: [
-          { label: "About Me", target: "about" }
-        ]
-      };
-    }
-  if (/spirit vegetable/.test(normalized)) {
-      return {
-        text: "My spirit vegetable is the potato: versatile, reliable, and able to adapt to any data environment!",
-        links: [
-          { label: "See My Skills", target: "skills" }
-        ]
-      };
-    }
-  if (/superpower/.test(normalized)) {
-      return {
-        text: "I'd choose the superpower of instant data cleaning—no more missing values or messy spreadsheets!",
-        links: [
-          { label: "View All Skills", target: "skills" }
-        ]
-      };
-    }
-  if (/conspiracy theory/.test(normalized)) {
-      return {
-        text: "My favorite conspiracy theory is that Excel secretly controls the world's financial systems. I keep a close eye on those spreadsheets!",
-        links: [
-          { label: "Contact Me", target: "contact" }
-        ]
-      };
-    }
-
-  // About/Who questions
-  if (has(['who', 'about', 'yourself', 'who are you', 'tell me about'])) {
-      return {
-        text: "Hi, I'm Dhruval Bhinsara—an aspiring Data Analyst and Computer Science major from Surat, Gujarat, India. I specialize in Oracle Technologies and love turning complex data into meaningful insights.",
-        links: [
-          { label: "Learn More About Me", target: "about" },
-          { label: "View My Skills", target: "skills" }
-        ]
-      };
-    }
-
-  // Skills questions
-  if (has(['skill', 'skills', 'technology', 'technologies', 'tools', 'what can you do', 'expertise'])) {
-      return {
-        text: "My expertise includes Python, SQL, Power BI, Tableau, Data Analysis, and Machine Learning. I'm passionate about data visualization and transforming data into actionable insights!",
-        links: [
-          { label: "View All Skills", target: "skills" },
-          { label: "See My Projects", target: "projects" }
-        ]
-      };
-    }
-
-  // Projects questions
-  if (has(['project', 'projects', 'work you did', 'portfolio', 'data project'])) {
-      return {
-        text: "One of my proudest achievements is building an E-commerce user behavior funnel with over 40 million rows of data. Feel free to explore my portfolio of data analysis and visualization projects!",
-        links: [
-          { label: "View All Projects", target: "projects" },
-          { label: "See My Skills", target: "skills" }
-        ]
-      };
-    }
-
-  // Experience questions
-  if (has(['experience', 'work', 'job', 'background', 'what have you done'])) {
-      return {
-        text: "I have hands-on experience in data analysis, building complex data models, and creating insightful visualizations with tools like Power BI and Tableau.",
-        links: [
-          { label: "View Projects", target: "projects" },
-          { label: "Download Resume", target: "resume" }
-        ]
-      };
-    }
-
-  // Education questions
-  if (has(['education', 'study', 'degree', 'school', 'college', 'university'])) {
-      return {
-        text: "I'm a Computer Science major specializing in Oracle Technologies. My passion for Data Science started in my teenage years!",
-        links: [
-          { label: "About Me", target: "about" },
-          { label: "View Resume", target: "resume" }
-        ]
-      };
-    }
-
-  // Resume questions
-  if (has(['resume', 'cv', 'download', 'curriculum vitae', 'profile'])) {
-      return {
-        text: "You can view my resume to see my professional experience, education, and technical skills!",
-        links: [
-          { label: "View Resume", target: "resume" },
-          { label: "See Skills", target: "skills" }
-        ]
-      };
-    }
-
-  // Contact questions
-  if (has(['contact', 'reach', 'email', 'connect', 'get in touch'])) {
-      return {
-        text: "I'd love to hear from you! Let's connect and chat about data, technology, or anything else you're curious about!",
-        links: [
-          { label: "Contact Me", target: "contact" }
-        ]
-      };
-    }
-
-  // Hobbies/Personal questions
-  if (has(['hobby', 'hobbies', 'free time', 'fun', 'what do you do for fun', 'interests'])) {
-      return {
-        text: "When I'm not crunching numbers, I love reading, filmmaking, and listening to indie rock music. Movies that explore art and the way of life always fascinate me.",
-        links: [
-          { label: "More About Me", target: "about" }
-        ]
-      };
-    }
-
-  // Location questions
-  if (has(['where', 'location', 'based', 'city', 'place', 'from'])) {
-      return {
-        text: "I'm based in Surat, Gujarat, India—a vibrant city with a rich culture and history.",
-        links: [
-          { label: "Contact Me", target: "contact" }
-        ]
-      };
-    }
-
-  // Greeting
-  if (has(['hello', 'hi', 'hey', 'greetings', 'yo', 'namaste'])) {
-      return {
-        text: "Hey there! 👋 I'm Dhruval. Ask me anything about my skills, projects, experience, and more!",
-        links: [
-          { label: "View Skills", target: "skills" },
-          { label: "See Projects", target: "projects" },
-          { label: "Contact", target: "contact" }
-        ]
-      };
-    }
-
-    // Default response
-    // Fallback: try to infer intent for favorites
-    if (normalized.match(/(car|amg|mercedes)/)) {
-      return {
-        text: "My dream car is the Mercedes AMG Black Series!",
-        links: [
-          { label: "About Me", target: "about" }
-        ]
-      };
-    }
-    if (normalized.match(/(f1 driver|verstappen|max)/)) {
-      return {
-        text: "Max Verstappen is my favorite Formula 1 driver!",
-        links: [
-          { label: "See My Skills", target: "skills" }
-        ]
-      };
-    }
-    if (normalized.match(/(team|red bull|mclaren)/)) {
-      return {
-        text: "Red Bull and McLaren are my favorite F1 teams!",
-        links: [
-          { label: "View Projects", target: "projects" }
-        ]
-      };
-    }
-    if (normalized.match(/(color|purple|lavender)/)) {
-      return {
-        text: "Purple and lavender are my favorite colors!",
-        links: [
-          { label: "See My Projects", target: "projects" }
-        ]
-      };
-    }
-    if (normalized.match(/(food|pizza)/)) {
-      return {
-        text: "Pizza is my favorite food!",
-        links: [
-          { label: "Contact Me", target: "contact" }
-        ]
-      };
-    }
-    if (normalized.match(/(animal|cat)/)) {
-      return {
-        text: "Cat is my favorite animal!",
-        links: [
-          { label: "More About Me", target: "about" }
-        ]
-      };
-    }
-    // Default response
-    return {
-      text: "I can tell you about my skills, projects, experience, education, and interests. Explore the sections below!",
-      links: [
-        { label: "About", target: "about" },
-        { label: "Projects", target: "projects" },
-        { label: "Skills", target: "skills" },
-        { label: "Contact", target: "contact" }
-      ]
-    };
+  const selectPrompt = (promptQuery: string) => {
+    setQuery(promptQuery);
+    setSubmittedQuery(promptQuery);
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!input.trim()) return;
-
-    const userMessage: Message = {
-      id: Date.now().toString(),
-      text: input,
-      isUser: true,
-      timestamp: Date.now()
-    };
-
-    setMessages(prev => [...prev, userMessage]);
-    setInput('');
-    setIsLoading(true);
-
-    // Simulate AI thinking
-    setTimeout(() => {
-      const response = getAIResponse(input);
-      const aiResponse: Message = {
-        id: (Date.now() + 1).toString(),
-        text: response.text,
-        isUser: false,
-        timestamp: Date.now(),
-        links: response.links
-      };
-      
-      setMessages(prev => [...prev, aiResponse]);
-      setIsLoading(false);
-    }, 800);
+  const clearSearch = () => {
+    setQuery("");
+    setSubmittedQuery("");
   };
 
   return (
-  <div className="w-full max-w-6xl mx-auto">
-      {/* Messages Container */}
-      <AnimatePresence>
-        {messages.length > 0 && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            className="mb-6 max-h-96 overflow-y-auto space-y-4 px-4 py-4 scroll-smooth backdrop-blur-sm bg-white/20 rounded-2xl border border-white/10"
-          >
-            {messages.map((message) => (
-              <motion.div
-                key={message.id}
-                initial={{ opacity: 0, x: message.isUser ? 20 : -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.3 }}
-                className={`flex ${message.isUser ? 'justify-end' : 'justify-start'}`}
-              >
-                <div
-                  className={`max-w-[80%] rounded-2xl px-4 py-3 ${
-                    message.isUser
-                      ? 'backdrop-blur-xl bg-gray-800/90 text-white border border-white/10 shadow-lg'
-                      : 'backdrop-blur-xl bg-white/60 text-black border border-white/20 shadow-lg'
-                  }`}
-                >
-                  <p className="text-sm leading-relaxed">{message.text}</p>
-                  
-                  {/* Interactive Links */}
-                  {!message.isUser && message.links && message.links.length > 0 && (
-                    <div className="flex flex-wrap gap-2 mt-3">
-                      {message.links.map((link, idx) => (
-                        <button
-                          key={idx}
-                          onClick={() => {
-                            const element = document.getElementById(link.target);
-                            element?.scrollIntoView({ behavior: 'smooth' });
-                          }}
-                          className="inline-flex items-center gap-1 px-3 py-1.5 backdrop-blur-md bg-white/70 text-gray-700 rounded-full text-xs font-medium hover:bg-white/90 transition-all duration-200 shadow-md border border-white/30 hover:scale-105"
-                        >
-                          <span>{link.label}</span>
-                          <ExternalLink className="w-3 h-3" />
-                        </button>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              </motion.div>
-            ))}
-            {isLoading && (
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                className="flex justify-start"
-              >
-                <div className="backdrop-blur-xl bg-white/60 rounded-2xl px-4 py-3 border border-white/20 shadow-lg">
-                  <Loader2 className="w-5 h-5 animate-spin text-gray-600" />
-                </div>
-              </motion.div>
-            )}
-          </motion.div>
-        )}
-      </AnimatePresence>
-      {/* Input Form - Wider */}
-      <div className="flex items-center gap-3 mt-4">
+    <section className="w-full max-w-5xl mx-auto px-4" aria-label="Portfolio guide">
+      <motion.div
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.25 }}
+        className="rounded-[1.75rem] border border-black/10 bg-white/75 shadow-[0_24px_70px_rgba(15,23,42,0.10)] backdrop-blur-xl"
+      >
         <form
           onSubmit={handleSubmit}
-          className="flex flex-1 items-center px-4 py-2 bg-white/30 backdrop-blur-md rounded-full shadow-lg border border-white/20"
+          className="flex items-center gap-3 border-b border-black/10 px-4 py-3 md:px-5"
         >
+          <Search className="h-5 w-5 flex-none text-gray-500" strokeWidth={2} />
           <input
             type="text"
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            className="flex-1 min-w-[200px] md:min-w-[350px] lg:min-w-[500px] px-4 py-3 rounded-full bg-white/30 backdrop-blur-md text-gray-900 placeholder-gray-500 focus:outline-none text-lg border-none"
-            placeholder="Ask me anything!"
-            disabled={isLoading}
-            maxLength={200}
+            value={query}
+            onChange={(event) => {
+              setQuery(event.target.value);
+              setSubmittedQuery("");
+            }}
+            className="min-w-0 flex-1 bg-transparent py-3 text-base text-gray-950 placeholder:text-gray-500 focus:outline-none md:text-lg"
+            placeholder="Search projects, skills, hobbies, resume, or contact"
+            maxLength={180}
           />
+          {query && (
+            <button
+              type="button"
+              onClick={clearSearch}
+              className="flex h-9 w-9 items-center justify-center rounded-full text-gray-500 transition hover:bg-black/5 hover:text-gray-900"
+              aria-label="Clear search"
+            >
+              <X className="h-4 w-4" />
+            </button>
+          )}
           <button
             type="submit"
-            className="ml-2 w-11 h-11 flex items-center justify-center rounded-full bg-white/60 backdrop-blur-md border border-white/30 hover:bg-white/80 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg"
-            disabled={isLoading || !input.trim()}
+            className="flex h-10 w-10 flex-none items-center justify-center rounded-full bg-gray-950 text-white shadow-lg transition hover:bg-gray-800 disabled:cursor-not-allowed disabled:opacity-40"
+            disabled={!query.trim()}
+            aria-label="Search portfolio"
           >
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#007aff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6">
-              <path d="M5 12h14M12 5l7 7-7 7" />
-            </svg>
+            <ArrowRight className="h-5 w-5" />
           </button>
         </form>
+
+        <div className="grid gap-5 p-4 md:grid-cols-[0.9fr_1.4fr] md:p-5">
+          <div>
+            <p className="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-gray-500">
+              Try a path
+            </p>
+            <div className="flex flex-wrap gap-2">
+              {guidePrompts.map((prompt) => (
+                <button
+                  key={prompt.intent}
+                  type="button"
+                  onClick={() => selectPrompt(prompt.query)}
+                  className="rounded-full border border-black/10 bg-white px-3.5 py-2 text-sm font-medium text-gray-800 shadow-sm transition hover:-translate-y-0.5 hover:border-gray-900 hover:text-gray-950"
+                >
+                  {prompt.label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <motion.div
+            key={`${response.title}-${submittedQuery || query}`}
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.2 }}
+            className="rounded-2xl bg-white/80 p-4 shadow-sm ring-1 ring-black/5"
+          >
+            <div className="flex flex-col gap-4">
+              <div>
+                <h2 className="text-xl font-bold text-gray-950">{response.title}</h2>
+                <p className="mt-2 text-sm leading-6 text-gray-600 md:text-base">
+                  {response.body}
+                </p>
+              </div>
+
+              <div className="flex flex-wrap gap-2">
+                {response.actions.map((action) => (
+                  <button
+                    key={`${action.kind}-${action.label}`}
+                    type="button"
+                    onClick={() => runAction(action)}
+                    className="inline-flex items-center gap-2 rounded-full bg-gray-950 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-gray-800"
+                  >
+                    {action.label}
+                    {action.kind === "external" ? (
+                      <ExternalLink className="h-3.5 w-3.5" />
+                    ) : (
+                      <ArrowRight className="h-3.5 w-3.5" />
+                    )}
+                  </button>
+                ))}
+              </div>
+
+              {response.detailItems && response.detailItems.length > 0 && (
+                <div className="flex flex-wrap gap-2">
+                  {response.detailItems.map((item) => (
+                    <span
+                      key={item}
+                      className="rounded-full border border-black/10 bg-gray-50 px-3 py-1.5 text-xs font-semibold text-gray-700"
+                    >
+                      {item}
+                    </span>
+                  ))}
+                </div>
+              )}
+
+              {response.matchedSkills && response.matchedSkills.length > 0 && (
+                <div className="grid gap-3 md:grid-cols-2">
+                  {response.matchedSkills.map((group) => (
+                    <button
+                      key={group.title}
+                      type="button"
+                      onClick={() => runAction(sectionAction("Open skills", "skills"))}
+                      className="rounded-2xl border border-black/10 bg-gray-50/80 p-4 text-left transition hover:-translate-y-0.5 hover:border-gray-900 hover:bg-white"
+                    >
+                      <h3 className="font-bold text-gray-950">{group.title}</h3>
+                      <p className="mt-2 line-clamp-2 text-sm leading-6 text-gray-600">
+                        {group.summary}
+                      </p>
+                    </button>
+                  ))}
+                </div>
+              )}
+
+              {response.matchedProjects && response.matchedProjects.length > 0 && (
+                <div className="grid gap-3 md:grid-cols-2">
+                  {response.matchedProjects.slice(0, 4).map((project) => (
+                    <a
+                      key={project.title}
+                      href={project.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="group rounded-2xl border border-black/10 bg-gray-50/80 p-4 text-left transition hover:-translate-y-0.5 hover:border-gray-900 hover:bg-white"
+                    >
+                      <div className="flex items-start justify-between gap-3">
+                        <div>
+                          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-gray-500">
+                            {project.category}
+                          </p>
+                          <h3 className="mt-1 font-bold text-gray-950">{project.title}</h3>
+                        </div>
+                        <ExternalLink className="mt-1 h-4 w-4 flex-none text-gray-400 transition group-hover:text-gray-900" />
+                      </div>
+                      <p className="mt-2 line-clamp-2 text-sm leading-6 text-gray-600">
+                        {project.description}
+                      </p>
+                    </a>
+                  ))}
+                </div>
+              )}
+            </div>
+          </motion.div>
+        </div>
+      </motion.div>
+
+      <div className="mt-3 flex flex-wrap justify-center gap-3 text-sm text-gray-600">
         <button
           type="button"
-          onClick={handleClearChat}
-          className="w-11 h-11 flex items-center justify-center rounded-full bg-white/60 backdrop-blur-md border border-white/30 hover:bg-white/80 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg"
-          disabled={isLoading || messages.length === 0}
-          aria-label="Clear chat"
+          onClick={() => runAction(sectionAction("Resume", "resume"))}
+          className="inline-flex items-center gap-1.5 rounded-full bg-white/70 px-3 py-1.5 shadow-sm ring-1 ring-black/5 transition hover:bg-white"
         >
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#ff3b30" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6">
-            <path d="M3 6h18" />
-            <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
-            <rect x="5" y="6" width="14" height="14" rx="2" />
-            <line x1="9" y1="10" x2="15" y2="16" />
-            <line x1="15" y1="10" x2="9" y2="16" />
-          </svg>
+          <FileText className="h-4 w-4" />
+          Resume
+        </button>
+        <button
+          type="button"
+          onClick={() => runAction(sectionAction("Contact", "contact"))}
+          className="inline-flex items-center gap-1.5 rounded-full bg-white/70 px-3 py-1.5 shadow-sm ring-1 ring-black/5 transition hover:bg-white"
+        >
+          <Mail className="h-4 w-4" />
+          Contact
         </button>
       </div>
-    </div>
+    </section>
   );
 }

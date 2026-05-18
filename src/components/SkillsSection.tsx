@@ -1,90 +1,81 @@
 import React from "react";
 import { motion } from "framer-motion";
-import { Database, BarChart3, Code, FileSpreadsheet, Brain, TrendingUp } from "lucide-react";
+import { BarChart3, Brain, Code, Database, Smartphone } from "lucide-react";
+import { skillGroups } from "@/data/portfolio";
+import type { SkillGroup } from "@/data/portfolio";
 
-const skillCategories = [
-  {
-    title: "Data Analysis",
-    icon: BarChart3,
-    skills: ["Python (Pandas, NumPy)", "SQL", "Excel", "Data Cleaning", "Statistical Analysis"]
-  },
-  {
-    title: "Visualization",
-    icon: TrendingUp,
-    skills: ["Tableau", "Power BI", "Matplotlib", "Seaborn", "Data Storytelling"]
-  },
-  {
-    title: "Databases",
-    icon: Database,
-    skills: ["SQL Server", "MySQL", "PostgreSQL", "Oracle", "Query Optimization"]
-  },
-  {
-    title: "Programming",
-    icon: Code,
-    skills: ["Python", "SQL", "JavaScript", "React", "Git"]
-  },
-  {
-    title: "Machine Learning",
-    icon: Brain,
-    skills: ["Scikit-learn", "Predictive Modeling", "Data Mining", "Feature Engineering"]
-  },
-  {
-    title: "Tools",
-    icon: FileSpreadsheet,
-    skills: ["Jupyter Notebook", "VS Code", "Excel", "Google Analytics", "ETL"]
-  }
-];
+const skillIcons: Record<SkillGroup["icon"], React.ElementType> = {
+  analytics: BarChart3,
+  ml: Brain,
+  mobile: Smartphone,
+  backend: Database,
+  tools: Code,
+};
 
 const SkillsSection: React.FC = () => {
   return (
-    <section id="skills" className="py-16 md:py-24 px-6 md:px-12 bg-transparent">
-      <div className="max-w-7xl mx-auto">
+    <section id="skills" className="bg-transparent px-6 py-16 md:px-12 md:py-24">
+      <div className="mx-auto max-w-7xl">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3 }}
           viewport={{ once: true }}
-          className="text-center mb-12 md:mb-16"
+          className="mb-12 grid gap-6 md:mb-16 md:grid-cols-[0.75fr_1.25fr] md:items-end"
         >
-          <h2 className="text-3xl md:text-5xl font-bold mb-4 text-black">Skills & Technologies</h2>
-          <p className="text-lg text-gray-600">
-            Tools and technologies I use to turn data into insights
+          <div>
+            <p className="mb-3 text-sm font-semibold uppercase tracking-[0.18em] text-gray-500">
+              Capabilities
+            </p>
+            <h2 className="text-3xl font-bold tracking-tight text-black md:text-5xl">
+              A practical stack for data, models, and mobile apps.
+            </h2>
+          </div>
+          <p className="text-lg leading-8 text-gray-600">
+            The skill set is moving from analysis-only work toward product-shaped systems: data understanding, model experiments, mobile interfaces, and the APIs that connect them.
           </p>
         </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
-          {skillCategories.map((category, index) => {
-            const Icon = category.icon;
+        <div className="grid gap-4">
+          {skillGroups.map((group, index) => {
+            const Icon = skillIcons[group.icon];
+
             return (
               <motion.div
-                key={category.title}
-                initial={{ opacity: 0, y: 20 }}
+                key={group.title}
+                initial={{ opacity: 0, y: 18 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.3, delay: index * 0.07 }}
+                transition={{ duration: 0.25, delay: index * 0.05 }}
                 viewport={{ once: true }}
-                whileHover={{ y: -8, scale: 1.02 }}
-                className="backdrop-blur-md bg-white/60 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden border border-white/20 p-6"
+                className="grid gap-5 rounded-[1.5rem] border border-black/10 bg-white/65 p-5 shadow-sm backdrop-blur-md md:grid-cols-[240px_1fr] md:items-center"
               >
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="p-2 bg-gradient-to-br from-blue-100 to-purple-100 rounded-lg">
-                    <Icon className="w-6 h-6 text-gray-700" strokeWidth={2} />
+                <div className="flex items-center gap-4">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gray-950 text-white">
+                    <Icon className="h-6 w-6" />
                   </div>
-                  <h3 className="text-xl font-bold text-black">
-                    {category.title}
-                  </h3>
+                  <div>
+                    <h3 className="text-xl font-bold text-gray-950">{group.title}</h3>
+                    <p className="mt-1 text-sm leading-6 text-gray-600 md:hidden">
+                      {group.summary}
+                    </p>
+                  </div>
                 </div>
 
-                <ul className="space-y-2">
-                  {category.skills.map((skill) => (
-                    <li
-                      key={skill}
-                      className="flex items-center gap-2 text-gray-700"
-                    >
-                      <div className="w-1.5 h-1.5 bg-blue-500 rounded-full"></div>
-                      <span className="text-sm">{skill}</span>
-                    </li>
-                  ))}
-                </ul>
+                <div>
+                  <p className="hidden text-sm leading-6 text-gray-600 md:block">
+                    {group.summary}
+                  </p>
+                  <div className="mt-4 flex flex-wrap gap-2">
+                    {group.skills.map((skill) => (
+                      <span
+                        key={skill}
+                        className="rounded-full border border-black/10 bg-white px-3 py-1.5 text-sm font-medium text-gray-800"
+                      >
+                        {skill}
+                      </span>
+                    ))}
+                  </div>
+                </div>
               </motion.div>
             );
           })}
