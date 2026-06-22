@@ -64,12 +64,12 @@ const AboutCard: React.FC = () => {
                 className="mb-6"
               >
                 <p className="text-lg leading-relaxed text-black mb-4">
-                  I'm a <strong>Computer Science student</strong> building across <strong>data analytics</strong>, <strong>ML engineering</strong>, and <strong>mobile development</strong>. I like work where the path from raw data to a useful product is visible.
+                  I'm a <strong>Computer Science undergrad</strong> with hands-on experience in <strong>iOS development</strong>, <strong>machine learning</strong>, and <strong>AI engineering</strong>. I like work where the path from raw data to a useful product is visible.
                 </p>
-                
+
                 {/* Skills Tags */}
                 <div className="flex flex-wrap gap-2 mb-6">
-                  {['Python', 'SQL', 'ML systems', 'SwiftUI', 'React Native', 'Power BI', 'Flask'].map((skill) => (
+                  {['Swift', 'SwiftUI', 'Python', 'PyTorch', 'React Native', 'Flask', 'SQL'].map((skill) => (
                     <span
                       key={skill}
                       className="rounded-full bg-black px-4 py-2 text-sm font-medium text-white"
@@ -92,7 +92,7 @@ const AboutCard: React.FC = () => {
                 </p>
 
                 <p>
-                  More recently, that has grown into ML and mobile work. FasalVaidya explores model-backed crop diagnosis, Traveloop is a mobile-first travel planner, and Machine Learning Journey keeps the fundamentals organized as I learn.
+                  More recently, that has grown into ML, AI, and mobile work. I build iOS features with SwiftUI as a freelance developer at <span className="font-medium text-black">Covert Defenses</span>, train PyTorch models like an EV charging-load predictor, and ship AI products such as FasalVaidya for crop diagnosis.
                 </p>
 
                 <p>

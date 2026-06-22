@@ -97,7 +97,7 @@ const HeroSection: React.FC = () => {
         transition={{ duration: 0.4, delay: 0.2 }}
         className="mb-6 max-w-6xl px-6 text-center text-4xl font-bold leading-tight text-black md:text-6xl lg:text-7xl"
       >
-        Data, ML & Mobile Developer
+        iOS, ML & AI Developer
       </motion.h1>
       <motion.p
         initial={{ opacity: 0, y: 12 }}
@@ -105,7 +105,7 @@ const HeroSection: React.FC = () => {
         transition={{ duration: 0.35, delay: 0.25 }}
         className="mb-8 max-w-3xl px-6 text-center text-base text-gray-600 md:text-xl"
       >
-        Building from analytics into ML-backed products, iOS learning, and mobile-first apps.
+        Computer Science undergrad building AI-powered, data-driven apps with Swift, Python, and PyTorch.
       </motion.p>
       {/* Avatar - Memoji */}
       <motion.div

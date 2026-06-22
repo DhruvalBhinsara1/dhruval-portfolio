@@ -1,4 +1,11 @@
-export type SectionId = "home" | "about" | "projects" | "skills" | "resume" | "contact";
+export type SectionId =
+  | "home"
+  | "about"
+  | "experience"
+  | "projects"
+  | "skills"
+  | "resume"
+  | "contact";
 
 export interface GuidePrompt {
   label: string;
@@ -30,6 +37,29 @@ export interface SkillGroup {
   domain: "analytics" | "ml" | "mobile" | "backend" | "tools";
 }
 
+export interface ExperienceItem {
+  role: string;
+  company: string;
+  location: string;
+  employment: string;
+  period: string;
+  points: string[];
+}
+
+export interface EducationItem {
+  school: string;
+  degree: string;
+  location: string;
+  period: string;
+  detail: string;
+}
+
+export interface Certification {
+  title: string;
+  issuer: string;
+  date: string;
+}
+
 export interface GuideResponse {
   title: string;
   body: string;
@@ -40,8 +70,8 @@ export interface GuideResponse {
 }
 
 export const guidePrompts: GuidePrompt[] = [
-  { label: "Show ML work", query: "Show ML work", intent: "ml" },
-  { label: "Mobile apps", query: "Mobile apps", intent: "mobile" },
+  { label: "Show ML & AI work", query: "Show ML and AI work", intent: "ml" },
+  { label: "iOS & mobile", query: "iOS and mobile apps", intent: "mobile" },
   { label: "Best project to review", query: "Best project to review", intent: "featured" },
   { label: "Skills", query: "skills", intent: "skills" },
   { label: "Hobbies", query: "hobbies", intent: "hobbies" },
@@ -50,14 +80,34 @@ export const guidePrompts: GuidePrompt[] = [
 
 export const portfolioProjects: PortfolioProject[] = [
   {
-    title: "FasalVaidya",
-    category: "ML product",
+    title: "Predicting EV Charging Loads",
+    category: "Deep learning",
     description:
-      "Crop-health diagnosis platform that reads leaf images, supports 9 crops and 43 deficiency classes, and pairs model output with practical recommendations.",
-    tags: ["ML", "React Native", "Flask", "TensorFlow"],
+      "PyTorch feedforward neural network predicting EV charging demand from 6,833 real-world Norwegian charging sessions. Engineered 26 features by merging charging logs with hourly traffic data and cut test error 5.5% over a linear-regression baseline.",
+    tags: ["PyTorch", "Neural Networks", "Pandas", "Scikit-learn"],
+    url: "https://github.com/DhruvalBhinsara1/ev-charging-load-prediction",
+    priority: "featured",
+    domain: "ml",
+  },
+  {
+    title: "FasalVaidya",
+    category: "AI product",
+    description:
+      "AI crop-health app that reads leaf images to detect NPK nutrient deficiencies, supports 9 crops and 43 deficiency classes, and pairs model output with practical recommendations.",
+    tags: ["React Native", "Expo", "Flask", "Machine Learning"],
     url: "https://github.com/DhruvalBhinsara1/FasalVaidya",
     priority: "featured",
     domain: "ml",
+  },
+  {
+    title: "NexaBrew",
+    category: "Full-stack · Hackathon",
+    description:
+      "Full-stack web app built and deployed during a hackathon with React and TypeScript, integrating external APIs with a focus on a responsive user experience.",
+    tags: ["React", "TypeScript", "Full Stack", "REST APIs"],
+    url: "https://github.com/DhruvalBhinsara1/nexabrew",
+    priority: "featured",
+    domain: "mobile",
   },
   {
     title: "Traveloop",
@@ -76,7 +126,7 @@ export const portfolioProjects: PortfolioProject[] = [
       "Structured ML study repo covering preprocessing, regression, classification, clustering, PCA, pipelines, cross-validation, metrics, and model persistence.",
     tags: ["Python", "Scikit-learn", "Jupyter", "ML"],
     url: "https://github.com/DhruvalBhinsara1/machine-learning-journey",
-    priority: "featured",
+    priority: "foundation",
     domain: "learning",
   },
   {
@@ -151,42 +201,99 @@ export const portfolioProjects: PortfolioProject[] = [
   },
 ];
 
+export const experienceItems: ExperienceItem[] = [
+  {
+    role: "Freelance iOS Developer",
+    company: "Covert Defenses",
+    location: "USA · Remote",
+    employment: "Contract · Part-Time",
+    period: "May 2026 – Present",
+    points: [
+      "Develop and maintain iOS application features using SwiftUI and Xcode in a remote contract environment.",
+      "Collaborate on secure mobile workflows and feature delivery while adhering to NDA requirements.",
+      "Manage source control and collaborative development using Git and GitHub.",
+    ],
+  },
+];
+
+export const educationItems: EducationItem[] = [
+  {
+    school: "Parul University",
+    degree: "B.Tech in Computer Science and Engineering",
+    location: "Vadodara, Gujarat",
+    period: "2024 – 2028",
+    detail:
+      "CGPA 7.82. Coursework: Data Structures & Algorithms, DBMS, Object-Oriented Programming, Machine Learning Fundamentals.",
+  },
+];
+
+export const certifications: Certification[] = [
+  { title: "Intro to PyTorch and Neural Networks", issuer: "Codecademy", date: "Jun 2026" },
+  { title: "Intro to OpenAI API", issuer: "Codecademy", date: "Jun 2026" },
+  { title: "Intro to Large Language Models (LLMs)", issuer: "Codecademy", date: "Jun 2026" },
+  { title: "Python for Data Science", issuer: "IBM", date: "Dec 2025" },
+  { title: "Statistics 101", issuer: "IBM", date: "Mar 2026" },
+  { title: "Java Foundations Certified Junior Associate", issuer: "Oracle", date: "Dec 2025" },
+  { title: "JavaScript Fundamentals", issuer: "Certification", date: "Apr 2025" },
+];
+
 export const skillGroups: SkillGroup[] = [
   {
-    title: "Analytics",
-    icon: "analytics",
-    summary: "Finding structure in messy data and turning it into readable decisions.",
-    skills: ["Python", "SQL", "Pandas", "Excel", "Power BI", "Tableau"],
-    domain: "analytics",
-  },
-  {
-    title: "ML Engineering",
+    title: "ML & AI",
     icon: "ml",
-    summary: "Learning the train, evaluate, tune, and ship cycle through hands-on notebooks and product work.",
-    skills: ["Scikit-learn", "Model evaluation", "Feature engineering", "Pipelines", "TensorFlow basics"],
+    summary: "Training, evaluating, and shipping models — plus working with LLMs and the OpenAI API.",
+    skills: ["PyTorch", "Scikit-learn", "Neural Networks", "Feature Engineering", "LLMs", "OpenAI API"],
     domain: "ml",
   },
   {
-    title: "Mobile / iOS",
+    title: "Mobile & iOS",
     icon: "mobile",
-    summary: "Building mobile-first flows and studying native Apple app development fundamentals.",
-    skills: ["Swift", "SwiftUI", "React Native", "Expo", "App architecture"],
+    summary: "Building native and cross-platform mobile experiences with SwiftUI and React Native.",
+    skills: ["Swift", "SwiftUI", "Xcode", "iOS Development", "React Native", "Expo"],
     domain: "mobile",
   },
   {
-    title: "Backend & Data",
+    title: "Analytics & Data",
+    icon: "analytics",
+    summary: "Finding structure in messy data and turning it into readable decisions.",
+    skills: ["Python", "SQL", "Pandas", "NumPy", "Data Analysis", "Power BI", "Tableau", "Excel"],
+    domain: "analytics",
+  },
+  {
+    title: "Backend & Web",
     icon: "backend",
-    summary: "Connecting app experiences to APIs, databases, authentication, and persisted state.",
-    skills: ["Express", "Flask", "REST APIs", "Postgres", "SQLite", "Prisma"],
+    summary: "Connecting app experiences to APIs, databases, and persisted state.",
+    skills: ["Flask", "Express", "REST APIs", "Postgres", "HTML", "CSS", "JavaScript"],
     domain: "backend",
   },
   {
-    title: "Tools",
+    title: "Languages & Tools",
     icon: "tools",
-    summary: "The working stack I use to study, build, debug, and present projects.",
-    skills: ["Git", "VS Code", "Jupyter", "Xcode", "TypeScript"],
+    summary: "The core languages and working stack I use to build, debug, and ship projects.",
+    skills: ["Java", "TypeScript", "Git", "GitHub", "Jupyter", "VS Code"],
     domain: "tools",
   },
 ];
 
 export const portfolioHobbies = ["Reading", "Filmmaking", "Formula 1", "Indie rock"];
+
+export interface MusicPlaylist {
+  /** Display name shown above the embed. */
+  title: string;
+  /** Public Apple Music playlist link (music.apple.com/...). */
+  appleMusicUrl: string;
+}
+
+// Apple Music playlists embedded on the site. Paste the public share link of
+// any playlist (Apple Music -> playlist -> Share -> Copy Link). Add or remove
+// entries freely; an empty array hides the section.
+export const musicPlaylists: MusicPlaylist[] = [
+  {
+    title: "Indie Mix",
+    appleMusicUrl: "https://music.apple.com/in/playlist/indie-mix/pl.u-AkAm8EeCx8l6ddd",
+  },
+  {
+    title: "Male Baddie",
+    appleMusicUrl: "https://music.apple.com/in/playlist/male-baddie/pl.u-ZmblVL1IVrpA666",
+  },
+];

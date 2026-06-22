@@ -102,27 +102,35 @@ function getGuideResponse(rawQuery: string): GuideResponse {
     };
   }
 
-  if (hasAny(query, ["ml", "machine", "model", "scikit", "tensorflow", "fasal", "crop"])) {
+  if (hasAny(query, ["ml", "machine", "model", "scikit", "pytorch", "neural", "ai", "llm", "openai", "fasal", "crop", "ev", "charging"])) {
     const matches = portfolioProjects.filter((project) =>
       ["ml", "learning"].includes(project.domain)
     );
     return {
-      title: "ML work",
-      body: "Start with FasalVaidya for product-shaped ML work, then use Machine Learning Journey to see the study trail behind the fundamentals.",
+      title: "ML & AI work",
+      body: "Predicting EV Charging Loads is the deepest deep-learning piece (PyTorch neural network). FasalVaidya shows AI shipped as a product, and Machine Learning Journey is the study trail behind the fundamentals.",
       actions: [sectionAction("Open projects", "projects"), sectionAction("See skills", "skills")],
       matchedProjects: matches,
     };
   }
 
-  if (hasAny(query, ["mobile", "ios", "swift", "swiftui", "react native", "expo", "app"])) {
+  if (hasAny(query, ["mobile", "ios", "swift", "swiftui", "react native", "expo", "app", "covert"])) {
     const matches = portfolioProjects.filter((project) =>
       ["mobile", "ml"].includes(project.domain)
     );
     return {
-      title: "Mobile work",
-      body: "Traveloop shows the clearest mobile-app direction. FasalVaidya also matters here because it combines a mobile scanner with model-backed diagnosis.",
-      actions: [sectionAction("Open projects", "projects"), sectionAction("Mobile skills", "skills")],
+      title: "iOS & mobile work",
+      body: "Dhruval builds iOS features in SwiftUI as a freelance developer at Covert Defenses. Traveloop and NexaBrew show full-stack mobile and web direction, and FasalVaidya pairs a mobile scanner with model-backed diagnosis.",
+      actions: [sectionAction("See experience", "experience"), sectionAction("Open projects", "projects")],
       matchedProjects: matches,
+    };
+  }
+
+  if (hasAny(query, ["experience", "work", "job", "career", "covert", "education", "degree", "university", "certification", "certificate"])) {
+    return {
+      title: "Experience & education",
+      body: "Freelance iOS Developer at Covert Defenses (May 2026–Present), studying B.Tech Computer Science at Parul University, with certifications in PyTorch, LLMs, the OpenAI API, and data science.",
+      actions: [sectionAction("Open experience", "experience"), sectionAction("Open resume", "resume")],
     };
   }
 
@@ -130,7 +138,7 @@ function getGuideResponse(rawQuery: string): GuideResponse {
     const matches = portfolioProjects.filter((project) => project.priority === "featured");
     return {
       title: "Best projects to review",
-      body: "Review these first: FasalVaidya for ML product depth, Traveloop for full-stack mobile work, and Machine Learning Journey for the learning system.",
+      body: "Review these first: Predicting EV Charging Loads for deep-learning depth, FasalVaidya for AI shipped as a product, NexaBrew for hackathon full-stack work, and Traveloop for mobile-app breadth.",
       actions: [sectionAction("Open projects", "projects"), sectionAction("Open resume", "resume")],
       matchedProjects: matches,
     };
@@ -149,7 +157,7 @@ function getGuideResponse(rawQuery: string): GuideResponse {
   if (matchesAnyPattern(query, guidePatterns.skills)) {
     return {
       title: "Skills",
-      body: "The skill set is grouped around Analytics, ML Engineering, Mobile/iOS, Backend & Data, and Tools. The current stack includes Python, SQL, Pandas, Scikit-learn, TensorFlow basics, Swift, SwiftUI, React Native, Express, Flask, Postgres, Git, Jupyter, Xcode, and TypeScript.",
+      body: "The skill set is grouped around ML & AI, Mobile & iOS, Analytics & Data, Backend & Web, and Languages & Tools. The current stack includes Swift, SwiftUI, Python, PyTorch, Scikit-learn, NumPy, Pandas, LLMs, the OpenAI API, React Native, Flask, Express, REST APIs, Postgres, SQL, Java, JavaScript, and TypeScript.",
       actions: [sectionAction("Open skills", "skills"), sectionAction("Open resume", "resume")],
       detailItems: skillGroups.map((group) => group.title),
       matchedSkills: skillGroups,

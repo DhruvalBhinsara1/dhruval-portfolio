@@ -33,3 +33,76 @@ body {
   min-width: 320px;
   min-height: 100vh;
 }
+
+/* Skeleton loading shimmer */
+@keyframes skeleton-shimmer {
+  0% { background-position: 150% 0; }
+  100% { background-position: -150% 0; }
+}
+
+.skeleton {
+  position: relative;
+  overflow: hidden;
+  background-color: rgba(15, 23, 42, 0.07);
+  background-image: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.45) 20%,
+    rgba(255, 255, 255, 0.75) 50%,
+    rgba(255, 255, 255, 0.45) 80%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  background-size: 220% 100%;
+  background-repeat: no-repeat;
+  background-position: 150% 0;
+  animation: skeleton-shimmer 1.6s linear infinite;
+  will-change: background-position;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skeleton {
+    animation: none;
+    background-image: none;
+  }
+}
+
+/* Apple Intelligence-style rotating gradient (skiper86-inspired) */
+@property --apple-angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+
+@keyframes apple-ai-rotate {
+  to { --apple-angle: 360deg; }
+}
+
+.apple-ai-gradient {
+  background: conic-gradient(
+    from var(--apple-angle),
+    #ff6b6b,
+    #f7b733,
+    #4ecdc4,
+    #5b8def,
+    #b16cea,
+    #ff6b6b
+  );
+  animation: apple-ai-rotate 5s linear infinite;
+}
+
+/* Fallback for browsers without @property: rotate the layer instead. */
+@supports not (background: conic-gradient(from var(--apple-angle), red, blue)) {
+  .apple-ai-gradient {
+    background: conic-gradient(#ff6b6b, #f7b733, #4ecdc4, #5b8def, #b16cea, #ff6b6b);
+    animation: apple-ai-spin 5s linear infinite;
+  }
+  @keyframes apple-ai-spin {
+    to { transform: rotate(360deg); }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .apple-ai-gradient {
+    animation: none;
+  }
+}

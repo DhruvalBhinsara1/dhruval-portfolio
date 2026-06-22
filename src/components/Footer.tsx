@@ -3,6 +3,7 @@ import { ArrowUpRight, Github, Linkedin, Mail } from "lucide-react";
 
 const footerLinks = [
   { label: "About", target: "about" },
+  { label: "Experience", target: "experience" },
   { label: "Projects", target: "projects" },
   { label: "Skills", target: "skills" },
   { label: "Resume", target: "resume" },
@@ -49,7 +50,7 @@ const Footer: React.FC = () => {
               Dhruval Bhinsara
             </button>
             <p className="max-w-xl text-lg leading-8 text-gray-700">
-              Computer Science student building across analytics, ML engineering, and mobile/iOS development.
+              Computer Science undergrad and freelance iOS developer building across iOS, machine learning, and AI engineering.
             </p>
           </div>
 
