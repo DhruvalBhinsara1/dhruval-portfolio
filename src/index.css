@@ -66,20 +66,18 @@ body {
   }
 }
 
-/* Apple Intelligence-style rotating gradient (skiper86-inspired) */
-@property --apple-angle {
-  syntax: "<angle>";
-  initial-value: 0deg;
-  inherits: false;
-}
-
-@keyframes apple-ai-rotate {
-  to { --apple-angle: 360deg; }
+/* Apple Intelligence-style gradient glow (skiper86-inspired).
+   Animated with hue-rotate on a static conic gradient — no transform,
+   no @property and no clipping, so it renders identically across browsers
+   (Safari included). The element never moves, so corners can't spill out. */
+@keyframes apple-ai-hue {
+  from { filter: hue-rotate(0deg); }
+  to { filter: hue-rotate(360deg); }
 }
 
 .apple-ai-gradient {
   background: conic-gradient(
-    from var(--apple-angle),
+    from 0deg,
     #ff6b6b,
     #f7b733,
     #4ecdc4,
@@ -87,18 +85,8 @@ body {
     #b16cea,
     #ff6b6b
   );
-  animation: apple-ai-rotate 5s linear infinite;
-}
-
-/* Fallback for browsers without @property: rotate the layer instead. */
-@supports not (background: conic-gradient(from var(--apple-angle), red, blue)) {
-  .apple-ai-gradient {
-    background: conic-gradient(#ff6b6b, #f7b733, #4ecdc4, #5b8def, #b16cea, #ff6b6b);
-    animation: apple-ai-spin 5s linear infinite;
-  }
-  @keyframes apple-ai-spin {
-    to { transform: rotate(360deg); }
-  }
+  animation: apple-ai-hue 6s linear infinite;
+  will-change: filter;
 }
 
 @media (prefers-reduced-motion: reduce) {
