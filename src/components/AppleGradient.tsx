@@ -4,23 +4,23 @@ import { motion, AnimatePresence } from "framer-motion";
 /**
  * Apple Intelligence-style animated gradient border.
  * Inspired by Skiper UI "skiper86" (https://skiper-ui.com/v1/skiper86),
- * rebuilt with framer-motion (no use-sound dependency).
+ * rebuilt with framer-motion. The rotating hue animation only runs while `on`
+ * is true (the layer is unmounted otherwise), so it never animates off-screen.
  *
- * The glow is controlled by the parent via `on`. A sound plays on every
- * off -> on transition (manual toggle or the `triggerOnView` first-view
- * activation). The rotation uses a CSS @property angle (see index.css).
+ * Controlled by the parent via `on`. With `triggerOnView` it reports viewport
+ * entry/exit through `onShow` / `onHide` so the parent can switch the glow on
+ * only while the wrapped element is visible.
  */
 type AppleGradientProps = {
   children: ReactNode;
-  /** Whether the glow is shown. */
+  /** Whether the glow is shown (and animating). */
   on: boolean;
   /** Blur radius of the glow in px. */
   intensity?: number;
-  /** Fire `onActivate` when first scrolled into view (parent flips `on`). */
+  /** Report viewport entry/exit via onShow/onHide. */
   triggerOnView?: boolean;
-  onActivate?: () => void;
-  /** Sound played when the glow turns on. */
-  soundSrc?: string;
+  onShow?: () => void;
+  onHide?: () => void;
   /** Tailwind radius classes; should match the wrapped element's corners. */
   radiusClass?: string;
   className?: string;
@@ -31,61 +31,16 @@ export default function AppleGradient({
   on,
   intensity = 18,
   triggerOnView = false,
-  onActivate,
-  soundSrc = "/assets/apple_intelligence.mp3",
+  onShow,
+  onHide,
   radiusClass = "rounded-[2.6rem]",
   className = "",
 }: AppleGradientProps) {
   const wrapRef = useRef<HTMLDivElement>(null);
-  const activatedRef = useRef(false);
-  const activateCb = useRef(onActivate);
-  activateCb.current = onActivate;
-
-  const audioRef = useRef<HTMLAudioElement | null>(null);
-  const ctxRef = useRef<AudioContext | null>(null);
-  const prevOnRef = useRef(on);
-
-  // Lazily build the audio element once.
-  useEffect(() => {
-    const audio = new Audio(soundSrc);
-    audio.preload = "auto";
-    audio.volume = 1;
-    audioRef.current = audio;
-  }, [soundSrc]);
-
-  // Play the sound on each off -> on transition (manual toggle or auto-trigger).
-  // Routed through a Web Audio GainNode so it can be amplified past 1.0.
-  useEffect(() => {
-    if (!prevOnRef.current && on && audioRef.current) {
-      const audio = audioRef.current;
-      const SOUND_GAIN = 4; // ~+12dB louder than the source file
-
-      try {
-        const AudioCtx =
-          window.AudioContext ||
-          (window as unknown as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
-
-        if (AudioCtx && !ctxRef.current) {
-          const ctx = new AudioCtx();
-          const source = ctx.createMediaElementSource(audio);
-          const gain = ctx.createGain();
-          gain.gain.value = SOUND_GAIN;
-          source.connect(gain);
-          gain.connect(ctx.destination);
-          ctxRef.current = ctx;
-        }
-        if (ctxRef.current?.state === "suspended") void ctxRef.current.resume();
-      } catch {
-        /* Web Audio unavailable — fall back to the plain element below */
-      }
-
-      audio.currentTime = 0;
-      void audio.play().catch(() => {
-        /* autoplay blocked until a user gesture — glow still works */
-      });
-    }
-    prevOnRef.current = on;
-  }, [on]);
+  const showCb = useRef(onShow);
+  showCb.current = onShow;
+  const hideCb = useRef(onHide);
+  hideCb.current = onHide;
 
   useEffect(() => {
     if (!triggerOnView) return;
@@ -95,14 +50,11 @@ export default function AppleGradient({
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
-          if (entry.isIntersecting && !activatedRef.current) {
-            activatedRef.current = true;
-            activateCb.current?.();
-            observer.disconnect();
-          }
+          if (entry.isIntersecting) showCb.current?.();
+          else hideCb.current?.();
         });
       },
-      { threshold: 0.2 },
+      { threshold: 0.15 },
     );
 
     observer.observe(el);
@@ -127,7 +79,7 @@ export default function AppleGradient({
         )}
       </AnimatePresence>
 
-      <div className="relative">{children}</div>
+      <div className="relative h-full w-full">{children}</div>
     </div>
   );
 }

@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { FileText, Github, Linkedin, Mail } from "lucide-react";
+import MemojiScreen from "./MemojiScreen";
 
 const navLinks = [
   { name: "Home", id: "home" },
@@ -64,6 +65,7 @@ function MenuClock() {
 
 export default function Navbar() {
   const [activeSection, setActiveSection] = useState("home");
+  const [memojiOpen, setMemojiOpen] = useState(false);
   const navScrollerRef = useRef<HTMLDivElement>(null);
   const navButtonRefs = useRef<Record<string, HTMLButtonElement | null>>({});
 
@@ -122,14 +124,16 @@ export default function Navbar() {
   }, [activeSection]);
 
   return (
+    <>
+    <MemojiScreen open={memojiOpen} onClose={() => setMemojiOpen(false)} />
     <header className="fixed inset-x-0 top-0 z-50 h-8 bg-black/55 text-white backdrop-blur-2xl">
       <div className="flex h-full items-center justify-between gap-3 px-2 text-[13px] sm:px-3">
         {/* Left: Apple logo + brand + section menus */}
         <div className="flex min-w-0 flex-1 items-center gap-1.5">
           <button
             type="button"
-            onClick={() => scrollToSection("home")}
-            aria-label="Go to home"
+            onClick={() => setMemojiOpen(true)}
+            aria-label="Open memoji"
             className="grid h-6 w-7 place-items-center rounded transition-colors hover:bg-white/15"
           >
             <AppleLogo />
@@ -212,5 +216,6 @@ export default function Navbar() {
         </div>
       </div>
     </header>
+    </>
   );
 }

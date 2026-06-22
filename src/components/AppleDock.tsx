@@ -101,8 +101,8 @@ function DockItem({
     return x - bounds.x - bounds.width / 2;
   });
 
-  const sizeTransform = useTransform(distance, [-140, 0, 140], [44, 74, 44]);
-  const iconTransform = useTransform(distance, [-140, 0, 140], [20, 34, 20]);
+  const sizeTransform = useTransform(distance, [-150, 0, 150], [44, 96, 44]);
+  const iconTransform = useTransform(distance, [-150, 0, 150], [20, 48, 20]);
   const size = useSpring(sizeTransform, { mass: 0.1, stiffness: 170, damping: 14 });
   const iconSize = useSpring(iconTransform, { mass: 0.1, stiffness: 170, damping: 14 });
 
@@ -165,7 +165,7 @@ function DockItem({
 
         <motion.span
           style={{ width: iconSize, height: iconSize }}
-          className="relative z-10 grid place-items-center [&>svg]:h-full [&>svg]:w-full [&>svg]:drop-shadow-[0_1px_1px_rgba(0,0,0,0.35)]"
+          className="relative z-10 grid place-items-center transition-transform duration-200 ease-out group-hover:scale-125 [&>svg]:h-full [&>svg]:w-full [&>svg]:drop-shadow-[0_1px_1px_rgba(0,0,0,0.35)]"
         >
           {entry.icon}
         </motion.span>
@@ -242,7 +242,7 @@ export default function AppleDock() {
         onReorder={handleReorder}
         onMouseMove={(e) => mouseX.set(e.clientX)}
         onMouseLeave={() => mouseX.set(Infinity)}
-        className="pointer-events-auto flex items-end gap-3 rounded-[1.5rem] border border-black/10 bg-white/65 px-4 py-3 shadow-[0_18px_55px_rgba(15,23,42,0.18)] backdrop-blur-2xl"
+        className="pointer-events-auto flex h-[68px] items-end gap-3 rounded-[1.5rem] border border-black/10 bg-white/65 px-4 pb-3 shadow-[0_18px_55px_rgba(15,23,42,0.18)] backdrop-blur-2xl"
         aria-label="Dock navigation"
       >
         {order.map((key) => (

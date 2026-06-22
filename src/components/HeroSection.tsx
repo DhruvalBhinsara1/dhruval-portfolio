@@ -1,77 +1,48 @@
 import React from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import PortfolioGuide from "./AISearch";
-
-const memojiImages = [
-  "/memoji.png",
-  "/memoji2.png",
-  "/memoji3.png",
-  "/memoji4.png",
-  "/memoji5.png",
-];
+import { memojiImages, nextMemoji } from "../data/memoji";
 
 function MemojiAvatar() {
   const [index, setIndex] = React.useState(0);
   const timerRef = React.useRef<number | null>(null);
 
-  // Change memoji randomly every 4-6 seconds
-  React.useEffect(() => {
-    if (timerRef.current) {
-      clearTimeout(timerRef.current);
-    }
-    timerRef.current = window.setTimeout(() => {
-      setIndex((i) => {
-        let next;
-        do {
-          next = Math.floor(Math.random() * memojiImages.length);
-        } while (next === i && memojiImages.length > 1);
-        return next;
-      });
-    }, 6000 + Math.floor(Math.random() * 7000));
-    return () => {
-      if (timerRef.current) {
-        clearTimeout(timerRef.current);
-      }
-    };
-  }, [index]);
+  const shuffle = React.useCallback(() => setIndex((i) => nextMemoji(i)), []);
 
-  // On hover, change immediately and reset timer
-  const handleMouseEnter = () => {
-    if (timerRef.current) {
-      clearTimeout(timerRef.current);
-    }
-    setIndex((i) => {
-      let next;
-      do {
-        next = Math.floor(Math.random() * memojiImages.length);
-      } while (next === i && memojiImages.length > 1);
-      return next;
-    });
-  };
-  const handleMouseLeave = () => {
-    // No action needed
-  };
+  // Auto-cycle every 6-13s; resets whenever the memoji changes.
+  React.useEffect(() => {
+    timerRef.current = window.setTimeout(shuffle, 6000 + Math.floor(Math.random() * 7000));
+    return () => {
+      if (timerRef.current) clearTimeout(timerRef.current);
+    };
+  }, [index, shuffle]);
 
   return (
-    <motion.div
-      className="h-24 w-24 cursor-pointer object-contain md:h-32 md:w-32 lg:h-36 lg:w-36"
-      style={{ display: 'inline-block' }}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
+    <motion.button
+      type="button"
+      onClick={shuffle}
+      onMouseEnter={shuffle}
+      aria-label="Shuffle memoji"
+      className="group relative h-40 w-40 cursor-pointer md:h-52 md:w-52 lg:h-60 lg:w-60"
+      animate={{ y: [0, -10, 0] }}
+      transition={{ duration: 4.5, repeat: Infinity, ease: "easeInOut" }}
+      whileTap={{ scale: 0.94 }}
     >
-      <motion.img
-        key={index}
-        src={memojiImages[index]}
-        alt="Dhruval Bhinsara"
-        loading="lazy"
-        initial={{ opacity: 0, scale: 0.8 }}
-        animate={{ opacity: 1, scale: 1 }}
-        exit={{ opacity: 0, scale: 0.8 }}
-        transition={{ type: 'spring', stiffness: 400, damping: 20, duration: 0.5 }}
-        style={{ willChange: 'transform', width: '100%', height: '100%' }}
-        whileHover={{ scale: 0.8 }}
-      />
-    </motion.div>
+      <div className="h-full w-full transition-transform duration-300 ease-out group-hover:scale-110">
+        <AnimatePresence initial={false}>
+          <motion.img
+            key={index}
+            src={memojiImages[index]}
+            alt="Dhruval Bhinsara"
+            initial={{ opacity: 0, scale: 0.4 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.4 }}
+            transition={{ type: "spring", stiffness: 520, damping: 20, mass: 0.6 }}
+            className="absolute inset-0 h-full w-full object-contain drop-shadow-[0_12px_30px_rgba(15,23,42,0.18)]"
+          />
+        </AnimatePresence>
+      </div>
+    </motion.button>
   );
 }
 
